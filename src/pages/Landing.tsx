@@ -11,6 +11,7 @@ import { api, trackCta } from "../api";
 import { navigate, onLinkClick, useQuery } from "../router";
 import { PublicHeader, PublicFooter, Eyebrow, H2, Loading } from "../components/shared/chrome";
 import { CAP_BY_KEY, CAPS } from "../content/caps";
+import { BUILTIN_BY_SLUG } from "../content/variants";
 import { ctaHref as resolveHref } from "../../shared/ctaMode";
 import { sectionOn, capabilityOn, DEFAULT_SITE_SETTINGS, type PublicConfig } from "../../shared/siteSettingsSchema";
 import type { PublicVariant } from "../../shared/variantSchema";
@@ -20,18 +21,31 @@ import { resourceInitials } from "../../shared/resourceSchema";
 const SORA = "Sora, sans-serif";
 const card: CSSProperties = { background: "#fff", border: "1px solid rgba(11,35,71,.08)", borderRadius: 16 };
 
+const DEFAULT_CONFIG: PublicConfig = { site: DEFAULT_SITE_SETTINGS, sections: {}, capabilities: {}, pricing: { tiers: [] }, analytics: { ga4: "", metaPixel: "", linkedinTag: "" }, pages: [] };
+
+/**
+ * Paint instantly from the bundled copy for a built-in slug (the home page is
+ * "sales" until the admin picks another), then re-render from the API — the
+ * same first-paint rule as The Authority Desk. A custom slug waits for the API.
+ */
+function bundledVariant(slug: string): PublicVariant | null {
+  const b = BUILTIN_BY_SLUG[slug || "sales"];
+  if (!b) return null;
+  return { slug: b.slug, label: b.label, audience: b.audience, content: b.content, bookingUrl: DEFAULT_SITE_SETTINGS.bookingUrl, ctaMode: "prequalify", isHome: !slug };
+}
+
 export default function Landing({ slug }: { slug: string }) {
   const query = useQuery();
   const preview = query.get("preview") === "1";
   const [config, setConfig] = useState<PublicConfig | null>(null);
-  const [variant, setVariant] = useState<PublicVariant | null>(null);
+  const [variant, setVariant] = useState<PublicVariant | null>(() => bundledVariant(slug));
   const [notFound, setNotFound] = useState(false);
   const [resources, setResources] = useState<ResourceRecord[]>([]);
   const [showPills, setShowPills] = useState(false);
 
   useEffect(() => {
     let alive = true;
-    api.config().then((c) => alive && setConfig(c)).catch(() => alive && setConfig({ site: DEFAULT_SITE_SETTINGS, sections: {}, capabilities: {}, pricing: { tiers: [] }, analytics: { ga4: "", metaPixel: "", linkedinTag: "" }, pages: [] }));
+    api.config().then((c) => alive && setConfig(c)).catch(() => alive && setConfig(DEFAULT_CONFIG));
     api.featuredResources().then((r) => alive && setResources(r)).catch(() => undefined);
     api.session().then((s) => alive && setShowPills(preview || s.authenticated)).catch(() => alive && setShowPills(preview));
     return () => { alive = false; };
@@ -40,6 +54,7 @@ export default function Landing({ slug }: { slug: string }) {
   useEffect(() => {
     let alive = true;
     setNotFound(false);
+    setVariant(bundledVariant(slug));
     api.variant(slug, preview)
       .then((v) => { if (alive) setVariant(v); })
       .catch(() => { if (alive) { setVariant(null); setNotFound(true); } });
@@ -50,8 +65,9 @@ export default function Landing({ slug }: { slug: string }) {
     if (variant?.content.metaTitle) document.title = variant.content.metaTitle;
   }, [variant]);
 
-  if (!config || (!variant && !notFound)) return <Loading />;
-  const site = config.site;
+  if (!variant && !notFound) return <Loading />;
+  const site = (config ?? DEFAULT_CONFIG).site;
+  const cfg = config ?? DEFAULT_CONFIG;
   if (!variant) return <NotFound loginUrl={site.loginUrl} />;
 
   const v = variant.content;
@@ -62,17 +78,17 @@ export default function Landing({ slug }: { slug: string }) {
   const ctaLabelShort = ctaMode === "book-call" ? "Book a call" : "Get started";
   const ctaMicro = ctaMode === "book-call" ? v.ctaMicro : "3-minute intake · then pick a time · no obligation";
   const track = () => trackCta(variant.slug);
-  const sec = (key: Parameters<typeof sectionOn>[1]) => sectionOn(config.sections, key);
+  const sec = (key: Parameters<typeof sectionOn>[1]) => sectionOn(cfg.sections, key);
   const showForm = sec("contactForm") && ctaMode === "book-call";
   const showIntakeCard = ctaMode !== "book-call" && sec("contactForm");
   const order = v.capOrder && v.capOrder.length ? v.capOrder : CAPS.map((c) => c.key);
-  const capabilities = order.map((k) => CAP_BY_KEY[k]).filter(Boolean).filter((c) => capabilityOn(config.capabilities, c.key)).map((c) => ({ ...c, body: v.capCopy?.[c.key] || c.body }));
+  const capabilities = order.map((k) => CAP_BY_KEY[k]).filter(Boolean).filter((c) => capabilityOn(cfg.capabilities, c.key)).map((c) => ({ ...c, body: v.capCopy?.[c.key] || c.body }));
   const steps = (v.steps || []).map((st, i) => ({ ...st, n: String(i + 1).padStart(2, "0") }));
   const vimeoSrc = `https://player.vimeo.com/video/${encodeURIComponent(site.vimeoId || "756896760")}?title=0&byline=0&portrait=0&dnt=1`;
-  const pages = config.pages;
+  const pages = cfg.pages.length ? cfg.pages : Object.values(BUILTIN_BY_SLUG).map((b) => ({ slug: b.slug, label: b.label, short: b.content.short, kicker: b.content.kicker, desc: b.content.desc }));
   const pathFor = (s: string) => (s === site.defaultVariant ? "/" : `/${s}`);
   const pick = (s: string) => navigate(pathFor(s) + (preview ? "?preview=1" : ""));
-  const tiers = (config.pricing?.tiers || []).map((t) => ({ ...t, featureList: String(t.features || "").split("\n").filter(Boolean) }));
+  const tiers = (cfg.pricing?.tiers || []).map((t) => ({ ...t, featureList: String(t.features || "").split("\n").filter(Boolean) }));
 
   const CtaLink = ({ style, className, label }: { style: CSSProperties; className?: string; label?: string }) => (
     <a href={ctaHref} target={ctaTarget} rel="noopener" onClick={(e) => { track(); if (ctaTarget === "_self") onLinkClick(e); }} className={className} style={style}>{label ?? ctaLabel}</a>

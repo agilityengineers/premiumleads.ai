@@ -35,7 +35,7 @@ function canonicalOrigin(): string {
   return envBase ? envBase.replace(/\/+$/, "") : CANONICAL_BASE_URL;
 }
 
-type Meta = { title: string; description: string; canonical: string; ogImage: string; robots: string; ogType: string };
+type Meta = { title: string; description: string; canonical: string; ogImage: string; robots: string; ogType: string; knownPage: boolean };
 
 async function metaFor(seg: string, origin: string): Promise<Meta> {
   const site = await readSetting("site");
@@ -48,6 +48,7 @@ async function metaFor(seg: string, origin: string): Promise<Meta> {
     ogImage: fallbackImage,
     robots: "index,follow",
     ogType: "website",
+    knownPage: false,
   };
   if (seg === "resources") {
     return { ...base, title: `Resources — ${suffix}`, description: "The complementary tools we use alongside Premium Leads: voice, authority content and nurture.", canonical: `${origin}/resources` };
@@ -72,6 +73,7 @@ async function metaFor(seg: string, origin: string): Promise<Meta> {
       ogImage: rec?.hasOgImage ? `${origin}/api/og/${v.slug}?v=${Date.parse(rec.updatedAt)}` : fallbackImage,
       robots: "index,follow",
       ogType: "website",
+      knownPage: true,
     };
   } catch (err) {
     console.error("[meta] lookup failed", err);
@@ -178,14 +180,16 @@ export async function createApp() {
       const url = req.originalUrl;
       const seg = url.split("?")[0].split("/").filter(Boolean)[0] ?? "";
       if (seg.includes(".")) return res.status(404).type("text/plain").send("Not found");
-      const landing = !NONINDEXABLE.has(seg) && seg !== "resources";
-      if (landing) recordPageView(req, seg).catch((err) => console.error("[traffic] page view failed", err));
-
       const templatePath = isProd ? path.join(root, "dist", "index.html") : path.join(root, "index.html");
       let template = await readFile(templatePath, "utf-8");
       if (vite) template = await vite.transformIndexHtml(url, template);
       const origin = canonicalOrigin();
       const m = await metaFor(seg, origin);
+      // Count the view against a real, published page only (fire-and-forget).
+      if (m.knownPage && !NONINDEXABLE.has(seg)) {
+        const site = await readSetting("site");
+        recordPageView(req, seg || site.defaultVariant).catch((err) => console.error("[traffic] page view failed", err));
+      }
       const html = template
         .replace(/%META_TITLE%/g, escapeHtml(m.title))
         .replace(/%META_DESCRIPTION%/g, escapeHtml(m.description))

@@ -10,7 +10,7 @@ import { db } from "./db";
 import { users, contactMessages } from "./schema";
 import {
   COOKIE_NAME, cookieOptions, createToken, requireAuth, requireSameOrigin, findUserByEmail, findUserById, hashPassword, verifyPassword,
-  rowToUser, temporaryPassword, loginThrottle, recordLoginFailure, clearLoginFailures, type AuthedRequest,
+  rowToUser, temporaryPassword, loginThrottle, recordLoginFailure, clearLoginFailures, currentUser, type AuthedRequest,
 } from "./auth";
 import { readSetting, readSettingMeta, writeSetting, resetSetting, readPrequalForm, SettingsValidationError } from "./settings";
 import { isSettingKey, SETTING_KEYS } from "../shared/settingsSchema";
@@ -39,7 +39,7 @@ import { recordCta, recordPrequal, buildTrafficReport, ctaClicksSince } from "./
 import { logActivity, recentActivity } from "./activity";
 import { getSecret, setSecret, clearSecret, secretsStatus, secretsConfigured, SecretsUnavailableError } from "./secrets";
 import { INTEGRATION_DEFS, isSecretField, type IntegrationStatus, type PublicConfig } from "../shared/siteSettingsSchema";
-import { loginSchema, changePasswordSchema, inviteUserSchema, updateUserSchema, ROLE_LABELS, type UserRole } from "../shared/usersSchema";
+import { loginSchema, changePasswordSchema, inviteUserSchema, updateUserSchema, ROLE_LABELS, roleAllows, type UserRole } from "../shared/usersSchema";
 import { sendLeadConfirmation, notifyNewLead, forwardContactMessage, sendTemporaryPassword, isEmailConfigured } from "./email";
 
 export const apiRouter = Router();
@@ -85,13 +85,11 @@ apiRouter.get("/config", async (_req, res) => {
 
 apiRouter.get("/variant", async (req, res) => {
   const slug = typeof req.query.slug === "string" ? req.query.slug : "";
-  const preview = req.query.preview === "1";
+  let preview = req.query.preview === "1";
   if (preview) {
-    // Only a signed-in admin may preview a draft.
-    const guard = requireAuth("pages");
-    let allowed = false;
-    await new Promise<void>((resolve) => guard(req, { status: () => ({ json: () => resolve() }) } as unknown as Response, () => { allowed = true; resolve(); }));
-    if (!allowed) return res.status(401).json({ error: "Unauthorized" });
+    // Only a signed-in admin may preview a draft; anyone else sees the published page or a 404.
+    const user = await currentUser(req);
+    preview = Boolean(user && !user.mustChangePassword && roleAllows(user.role as UserRole, "pages"));
   }
   const site = await readSetting("site");
   const target = slug || site.defaultVariant;
@@ -332,7 +330,6 @@ apiRouter.post("/admin/logout", (_req, res) => {
 });
 
 apiRouter.get("/admin/session", async (req, res) => {
-  const { currentUser } = await import("./auth");
   const user = await currentUser(req);
   res.set("Cache-Control", "no-store").json({ authenticated: Boolean(user), user: user ? rowToUser(user) : null });
 });

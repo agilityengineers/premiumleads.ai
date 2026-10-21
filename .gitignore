@@ -8,3 +8,4 @@ logs
 .vite
 .env
 .pgdata
+.local
