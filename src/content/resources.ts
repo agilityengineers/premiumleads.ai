@@ -1,0 +1,10 @@
+/* Complementary resources shown on /resources and teased on every landing page.
+   `DEFAULT_RESOURCES` from the design package's content.js. In production the
+   admin pastes a URL; the server screenshots the page and writes the blurb. */
+import type { ResourceInput } from "../../shared/resourceSchema";
+
+export const DEFAULT_RESOURCES: ResourceInput[] = [
+  { id: "authority-desk", name: "The Authority Desk", url: "https://authority-desk.com/", category: "Content & authority", tagline: "A done-for-you newsroom for founders and experts.", description: "Twenty minutes a month on a call becomes published, search-ready authority articles under your name — written in your voice and edited by real strategists. Pairs with Premium Leads so the prospects you reach find a credible expert when they look you up.", highlights: ["Human-edited authority articles", "Featured-Expert press kit", "Articles repurposed into social and video"], featured: true },
+  { id: "brand-voice-interview", name: "Brand Voice Interview", url: "https://brand-voice-interview.com/", category: "Voice & messaging", tagline: "Capture how you think and sound — once.", description: "A senior-led interview that produces a voice profile: tone, phrasing, point of view and the stories you tell. Premium Leads sequences and Authority Desk articles are written from it, so every touch sounds unmistakably like you.", highlights: ["Guided 45-minute session", "Reusable voice profile", "Feeds outreach, articles and newsletters"], featured: true },
+  { id: "insta-newsletter", name: "Insta Newsletter", url: "https://insta-newsletter.com/", category: "Nurture", tagline: "Turn what you already said into a newsletter people open.", description: "Drafts a branded newsletter from your calls, articles and posts, then sends it on schedule. Keeps every prospect Premium Leads reached warm between conversations.", highlights: ["Auto-drafted from your content", "Branded templates", "Scheduled sends with open and click reporting"], featured: true },
+];

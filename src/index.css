@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles from the design package. Each page sets its own body background
+   via a class on <body> (landing/get-started/resources: #F6F9FD; admin: #F1F5FA). */
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #F6F9FD; color: #0B2347; font-family: Manrope, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+body.pl-admin { background: #F1F5FA; }
+a { color: #1E88E5; text-decoration: none; }
+a:hover { color: #0C2E63; }
+section { scroll-margin-top: 84px; }
+details summary::-webkit-details-marker { display: none; }
+details[open] [data-plus] { transform: rotate(45deg); }
+input, textarea, select, button { font-family: inherit; }
+input:focus, textarea:focus, select:focus { outline: 2px solid #1E88E5; outline-offset: 1px; }
+.pl-landing input:focus, .pl-landing textarea:focus { border-color: #1E88E5 !important; }
+button:disabled { opacity: .5; cursor: not-allowed !important; }
+::selection { background: rgba(30,136,229,.22); }
+@keyframes pl-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes pl-spin { to { transform: rotate(360deg); } }
+
+/* `style-hover` from the .dc.html specs, as classes. */
+.hov-blue:hover { color: #1E88E5 !important; }
+.hov-cyan:hover { color: #00B2EF !important; }
+.hov-ink:hover { color: #0B2347 !important; }
+.hov-white:hover { color: #fff !important; }
+.hov-night:hover { color: #0D1B2E !important; }
+.hov-bg-soft:hover { background: rgba(11,35,71,.06) !important; }
+.hov-bg-soft-light:hover { background: rgba(230,238,248,.08) !important; color: #fff !important; }
+.hov-bg-blue:hover { background: #1E88E5 !important; color: #fff !important; }
+.hov-bg-white:hover { background: #fff !important; color: #0D1B2E !important; }
+.hov-border-blue:hover { border-color: #1E88E5 !important; }
+.hov-lift:hover { transform: translateY(-2px); }
+.hov-lift-3:hover { transform: translateY(-3px); }
+.hov-card:hover { transform: translateY(-3px); box-shadow: 0 24px 40px -28px rgba(12,46,99,.4); }
+
+/* Layouts the spec fixes at desktop widths, collapsed for phones. */
+@media (max-width: 800px) {
+  .pl-getstarted-main { grid-template-columns: minmax(0,1fr) !important; }
+  .pl-getstarted-aside { position: static !important; }
+  .pl-two-col { grid-template-columns: 1fr !important; }
+  .pl-two-col > * { grid-column: auto !important; }
+}
+@media (max-width: 900px) {
+  .pl-admin-shell { grid-template-columns: minmax(0,1fr) !important; }
+  .pl-admin-aside { position: static !important; height: auto !important; }
+  .pl-admin-main { padding: 20px 16px !important; }
+  .pl-admin-resource { grid-template-columns: minmax(0,1fr) !important; }
+  .pl-lead-row { grid-template-columns: minmax(0,1fr) !important; }
+}
+@media (max-width: 640px) {
+  .pl-hide-mobile { display: none !important; }
+  .pl-pill-bar { display: none !important; }
+}
