@@ -160,6 +160,15 @@ export type ContactRecord = {
   createdAt: string;
   /** Derived for the Leads panel badges. */
   sync: { authorityDesk: SyncBadge; brandVoice: SyncBadge };
+  /** The newest submission's pinned answers, for the collapsed Leads row. */
+  latest: {
+    submissionId: number;
+    clientType: string;
+    marketingBudget: string;
+    readiness: string;
+    servicePreference: string;
+    routingDestination: string | null;
+  } | null;
 };
 
 /** One line on a contact's timeline. */

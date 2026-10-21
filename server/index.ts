@@ -17,6 +17,7 @@ import { readSetting } from "./settings";
 import { getPublicVariant, listVariants } from "./variants";
 import { recordPageView } from "./traffic";
 import { startRelayWorker } from "./authorityDesk";
+import { backfillSnapshots } from "./resources";
 import { RESERVED_SLUGS } from "../shared/variantSchema";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -191,6 +192,7 @@ export async function createApp() {
         recordPageView(req, seg || site.defaultVariant).catch((err) => console.error("[traffic] page view failed", err));
       }
       const html = template
+        .replace("<!--CANONICAL_LINK-->", `<link rel="canonical" href="${escapeHtml(m.canonical)}" />`)
         .replace(/%META_TITLE%/g, escapeHtml(m.title))
         .replace(/%META_DESCRIPTION%/g, escapeHtml(m.description))
         .replace(/%META_CANONICAL%/g, escapeHtml(m.canonical))
@@ -217,6 +219,7 @@ async function main() {
   }
   await seedAll().catch((e) => console.error("[seed] failed", e));
   startRelayWorker();
+  backfillSnapshots();
   const { httpServer } = await createApp();
   httpServer.listen(PORT, "0.0.0.0", () => {
     console.log(`[server] listening on http://0.0.0.0:${PORT} (${isProd ? "production" : "development"})`);

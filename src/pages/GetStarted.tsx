@@ -127,7 +127,7 @@ export default function GetStarted() {
           <a href={backHref} onClick={onLinkClick} style={{ display: "flex", alignItems: "center" }}><img src="/logo-wordmark.png" alt="Premium Leads" style={{ height: 32, width: "auto", display: "block" }} /></a>
           <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 14, fontWeight: 600 }}>
             <span className="pl-hide-mobile" style={{ color: "#6B7A90" }}>Coming from: <span style={{ color: "#0B2347" }}>{doorName}</span></span>
-            <a href={data.loginUrl} className="hov-bg-soft hov-ink" style={{ color: "#0B2347", padding: "9px 14px", borderRadius: 8 }}>Log in</a>
+            <a href={data.loginUrl} className="hov-bg-soft hov-ink" style={{ color: "#0B2347", padding: "9px 14px", borderRadius: 8, whiteSpace: "nowrap" }}>Log in</a>
           </div>
         </div>
       </header>

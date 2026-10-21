@@ -8,7 +8,7 @@ import { asc, eq, sql } from "drizzle-orm";
 import { db, query } from "./db";
 import { resources } from "./schema";
 import { resourceInitials, type ResourceDraft, type ResourceInput, type ResourceRecord } from "../shared/resourceSchema";
-import { extractPage, fetchHtml, normalizeUrl, FetchPageError } from "./extract";
+import { extractPage, fetchHtml, normalizeUrl, assertPublicHost, FetchPageError } from "./extract";
 import { screenshotPage } from "./snapshot";
 import { AiError, availableProviders, generateResourceBlurb, type Provider } from "./ai";
 
@@ -186,3 +186,30 @@ export async function draftFromUrl(input: { url: string; id?: string; force?: bo
 }
 
 export { resourceInitials };
+
+/**
+ * Best-effort, once per boot: screenshot any resource that has a URL but no
+ * stored snapshot yet (the three seeded tools, say). Never blocks startup and
+ * never throws — a page that can't be rendered keeps the gradient placeholder.
+ */
+export function backfillSnapshots(delayMs = 8_000): void {
+  const timer = setTimeout(async () => {
+    try {
+      const rows = await db().select({ id: resources.id, url: resources.url }).from(resources).where(sql`url <> '' AND snapshot IS NULL`);
+      for (const r of rows) {
+        try {
+          const url = normalizeUrl(r.url);
+          await assertPublicHost(new URL(url));
+          const png = await screenshotPage(url);
+          await db().update(resources).set({ snapshot: png, snapshotType: "image/png", snapshotAt: new Date() }).where(eq(resources.id, r.id));
+          console.log(`[resources] snapshot stored for ${r.id}`);
+        } catch (err) {
+          console.log(`[resources] snapshot skipped for ${r.id}: ${err instanceof Error ? err.message.split("\n")[0] : String(err)}`);
+        }
+      }
+    } catch (err) {
+      console.error("[resources] snapshot backfill failed", err);
+    }
+  }, delayMs);
+  timer.unref?.();
+}

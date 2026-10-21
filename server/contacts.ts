@@ -48,11 +48,17 @@ type ContactRow = {
   last_event_at: Date;
   created_at: Date;
   submission_count: string | number;
-  // newest submission's relay state
+  // newest submission's relay state + pinned answers
+  s_id: string | null;
   s_ad_synced_at: Date | null;
   s_ad_sync_error: string | null;
   s_ad_parked: boolean | null;
   s_bvi_interviewee_id: string | null;
+  s_routing_destination: string | null;
+  s_client_type: string | null;
+  s_marketing_budget: string | null;
+  s_readiness: string | null;
+  s_service_preference: string | null;
 };
 
 const CONTACT_COLUMNS = `
@@ -62,13 +68,15 @@ const CONTACT_COLUMNS = `
   c.interview_completed_at, c.blueprint_delivered_at, c.archived_at, c.deleted_at,
   c.last_event_at, c.created_at,
   (SELECT count(*) FROM prequalification_submissions s WHERE s.contact_id = c.id) AS submission_count,
-  s.ad_synced_at AS s_ad_synced_at, s.ad_sync_error AS s_ad_sync_error, s.ad_parked AS s_ad_parked,
-  s.bvi_interviewee_id AS s_bvi_interviewee_id`;
+  s.id AS s_id, s.ad_synced_at AS s_ad_synced_at, s.ad_sync_error AS s_ad_sync_error, s.ad_parked AS s_ad_parked,
+  s.bvi_interviewee_id AS s_bvi_interviewee_id, s.routing_destination AS s_routing_destination,
+  s.client_type AS s_client_type, s.answers->>'marketingBudget' AS s_marketing_budget,
+  s.answers->>'readiness' AS s_readiness, s.answers->>'servicePreference' AS s_service_preference`;
 
 const CONTACT_FROM = `
   FROM contacts c
   LEFT JOIN LATERAL (
-    SELECT ad_synced_at, ad_sync_error, ad_parked, bvi_interviewee_id
+    SELECT id, ad_synced_at, ad_sync_error, ad_parked, bvi_interviewee_id, routing_destination, client_type, answers
       FROM prequalification_submissions ps
      WHERE ps.contact_id = c.id
      ORDER BY ps.created_at DESC, ps.id DESC
@@ -133,6 +141,16 @@ export function rowToContact(row: ContactRow, relayConfigured: boolean): Contact
     lastEventAt: row.last_event_at.toISOString(),
     createdAt: row.created_at.toISOString(),
     sync: syncBadges(row, relayConfigured),
+    latest: row.s_id
+      ? {
+          submissionId: Number(row.s_id),
+          clientType: row.s_client_type ?? "",
+          marketingBudget: row.s_marketing_budget ?? "",
+          readiness: row.s_readiness ?? "",
+          servicePreference: row.s_service_preference ?? "",
+          routingDestination: row.s_routing_destination,
+        }
+      : null,
   };
 }
 
