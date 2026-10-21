@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Get started — Premium Leads</title>
+<link rel="icon" href="assets/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F9FD;color:#0B2347;font-family:Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#1E88E5;text-decoration:none}a:hover{color:#0C2E63}
+input,textarea{font-family:inherit}
+input:focus,textarea:focus{outline:2px solid #1E88E5;outline-offset:1px}
+button:disabled{opacity:.5;cursor:not-allowed !important}
+</style>
+</helmet>
+
+<header style="position:sticky;top:0;z-index:50;background:rgba(246,249,253,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(11,35,71,.08)">
+  <div style="max-width:1100px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px">
+    <a href="{{ backHref }}" style="display:flex;align-items:center"><img src="assets/logo-wordmark.png" alt="Premium Leads" style="height:32px;width:auto;display:block"></a>
+    <div style="display:flex;align-items:center;gap:14px;font-size:14px;font-weight:600">
+      <span style="color:#6B7A90">Coming from: <span style="color:#0B2347">{{ doorName }}</span></span>
+      <a href="https://app.premiumleads.ai/auth/sign-in" style="color:#0B2347;padding:9px 14px;border-radius:8px" style-hover="background:rgba(11,35,71,.06);color:#0B2347">Log in</a>
+    </div>
+  </div>
+</header>
+
+<main style="max-width:1100px;margin:0 auto;padding:56px 28px 104px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:48px;align-items:start">
+  <aside style="position:sticky;top:92px;display:grid;gap:18px">
+    <div style="font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1E88E5">Get started</div>
+    <h1 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(28px,3.4vw,40px);line-height:1.08;letter-spacing:-.025em;margin:0">{{ heading }}</h1>
+    <p style="font-size:15.5px;line-height:1.6;color:#4A5B74;margin:0">{{ intro }}</p>
+    <ol style="list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px">
+      <sc-for list="{{ stepsNav }}" as="s" hint-placeholder-count="6">
+        <li style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;background:{{ s.bg }}">
+          <span style="width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:{{ s.dotBg }};color:{{ s.dotFg }}">{{ s.n }}</span>
+          <span style="font-size:14px;font-weight:600;color:{{ s.fg }}">{{ s.title }}</span>
+        </li>
+      </sc-for>
+    </ol>
+    <div style="font-size:13px;color:#6B7A90;line-height:1.5;border-top:1px solid rgba(11,35,71,.1);padding-top:14px">Takes about 3 minutes. Already did a Brand Voice Interview or Authority Desk intake? Use the same email — we'll skip what we already know.</div>
+  </aside>
+
+  <section style="display:grid;gap:20px">
+    <sc-if value="{{ notDone }}" hint-placeholder-val="{{ true }}">
+      <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:18px;padding:34px;box-shadow:0 24px 48px -40px rgba(12,46,99,.4);display:grid;gap:22px">
+        <div>
+          <div style="font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1E88E5;margin-bottom:8px">{{ section.kicker }}</div>
+          <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:26px;letter-spacing:-.02em;margin:0 0 6px">{{ section.heading }}</h2>
+          <sc-if value="{{ section.note }}" hint-placeholder-val="{{ true }}"><p style="margin:0;font-size:14.5px;color:#6B7A90;line-height:1.5">{{ section.note }}</p></sc-if>
+        </div>
+        <sc-if value="{{ skipped }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(30,136,229,.08);border-radius:10px;padding:12px 14px;font-size:13.5px;color:#0C2E63;line-height:1.5">We already have these answers from your Brand Voice Interview — confirm or update them.</div></sc-if>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <sc-for list="{{ questions }}" as="q" hint-placeholder-count="4">
+            <div style="grid-column:{{ q.span }};display:grid;gap:8px">
+              <label style="font-size:14px;font-weight:700;color:#0B2347">{{ q.label }}<sc-if value="{{ q.required }}" hint-placeholder-val="{{ false }}"><span style="color:#1E88E5"> *</span></sc-if></label>
+              <sc-if value="{{ q.hint }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#6B7A90;margin-top:-4px">{{ q.hint }}</div></sc-if>
+              <sc-if value="{{ q.isText }}" hint-placeholder-val="{{ true }}"><input type="{{ q.type }}" name="{{ q.id }}" value="{{ q.value }}" placeholder="{{ q.placeholder }}" onChange="{{ onField }}" style="border:1px solid {{ q.border }};border-radius:9px;padding:12px 14px;font-size:15px;color:#0B2347"></sc-if>
+              <sc-if value="{{ q.isTextarea }}" hint-placeholder-val="{{ false }}"><textarea name="{{ q.id }}" value="{{ q.value }}" placeholder="{{ q.placeholder }}" onChange="{{ onField }}" rows="{{ 3 }}" style="border:1px solid {{ q.border }};border-radius:9px;padding:12px 14px;font-size:15px;color:#0B2347;resize:vertical;line-height:1.5"></textarea></sc-if>
+              <sc-if value="{{ q.isOptions }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;grid-template-columns:repeat({{ q.columns }},minmax(0,1fr));gap:8px">
+                  <sc-for list="{{ q.opts }}" as="o" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ o.pick }}" style="cursor:pointer;text-align:left;display:flex;align-items:flex-start;gap:10px;border:1px solid {{ o.border }};background:{{ o.bg }};border-radius:10px;padding:11px 13px;font-size:14px;line-height:1.4;color:#0B2347;font-family:inherit">
+                      <span style="flex:none;margin-top:2px;width:16px;height:16px;border-radius:{{ q.radius }};border:2px solid {{ o.dotBorder }};background:{{ o.dotBg }};display:flex;align-items:center;justify-content:center"><span style="width:6px;height:6px;border-radius:50%;background:{{ o.innerBg }}"></span></span>{{ o.label }}
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ q.error }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#B02A2A;font-weight:600">{{ q.error }}</div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid rgba(11,35,71,.08);padding-top:20px;flex-wrap:wrap">
+          <button type="button" onClick="{{ back }}" disabled="{{ isFirst }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);color:#33465F;border-radius:9px;padding:12px 18px;font-weight:700;font-size:14.5px;font-family:inherit">← Back</button>
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="font-size:13px;color:#6B7A90">Step {{ stepNo }} of {{ stepCount }}</span>
+            <button type="button" onClick="{{ next }}" style="cursor:pointer;background:#0C2E63;color:#fff;border:0;border-radius:9px;padding:13px 22px;font-weight:700;font-size:14.5px;font-family:inherit;transition:background .2s" style-hover="background:#1E88E5">{{ nextLabel }}</button>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:12.5px;color:#6B7A90;text-align:center">Prefer to talk first? <a href="{{ bookingUrl }}" target="_blank" rel="noopener" style="font-weight:700">Book a call without the form →</a></div>
+    </sc-if>
+
+    <sc-if value="{{ doneBook }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#0C2E63;background-image:radial-gradient(600px 360px at 100% 0%, rgba(0,178,239,.35), transparent 60%);color:#fff;border-radius:18px;padding:40px;display:grid;gap:18px;box-shadow:0 30px 60px -36px rgba(12,46,99,.6)">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#00B2EF">You're pre-qualified</div>
+        <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.02em;line-height:1.08;margin:0;color:#fff">{{ firstName }}, let's pick a time.</h2>
+        <p style="margin:0;font-size:16.5px;line-height:1.6;color:rgba(255,255,255,.78);max-width:52ch">A Premium Leads advisor will walk through your {{ doorNameLower }} goals and show you exactly what your first campaign looks like. Your answers are already on their desk.</p>
+        <div><a href="{{ prefilledBooking }}" target="_blank" rel="noopener" style="display:inline-block;background:#00B2EF;color:#0D1B2E;font-weight:700;font-size:16px;padding:16px 28px;border-radius:10px;transition:transform .2s" style-hover="transform:translateY(-2px);color:#0D1B2E">Book your call →</a></div>
+        <div style="font-size:13px;color:rgba(255,255,255,.55)">Reference {{ submissionRef }} · 15 minutes · No obligation</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ doneNurture }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:18px;padding:40px;display:grid;gap:16px;box-shadow:0 24px 48px -40px rgba(12,46,99,.4)">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1E88E5">Thanks, {{ firstName }}</div>
+        <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.02em;line-height:1.08;margin:0">Good timing matters. We'll stay in touch.</h2>
+        <p style="margin:0;font-size:16px;line-height:1.6;color:#4A5B74;max-width:52ch">It sounds like you're still exploring, so we won't push a sales call on you. We'll send a short note on how {{ doorNameLower }} teams run outbound with Premium Leads — and when you're ready, your answers will be waiting.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap"><a href="Premium Leads Resources.dc.html" style="display:inline-block;background:#0C2E63;color:#fff;font-weight:700;font-size:14.5px;padding:12px 20px;border-radius:9px" style-hover="background:#1E88E5;color:#fff">Explore resources</a><a href="{{ bookingUrl }}" target="_blank" rel="noopener" style="display:inline-block;color:#0B2347;font-weight:700;font-size:14.5px;padding:12px 4px;border-bottom:2px solid rgba(11,35,71,.2)">Book a call anyway →</a></div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12.5px;font-weight:700">
+        <span style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid rgba(11,35,71,.1);border-radius:100px;padding:6px 12px;color:#33465F"><span style="width:7px;height:7px;border-radius:50%;background:#22C55E"></span>Saved to Premium Leads</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid rgba(11,35,71,.1);border-radius:100px;padding:6px 12px;color:#33465F"><span style="width:7px;height:7px;border-radius:50%;background:#22C55E"></span>Synced to The Authority Desk</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid rgba(11,35,71,.1);border-radius:100px;padding:6px 12px;color:#33465F"><span style="width:7px;height:7px;border-radius:50%;background:#22C55E"></span>Card created in Brand Voice Interview</span>
+      </div>
+    </sc-if>
+  </section>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { m: null, cfg: null, step: 0, answers: {}, errors: {}, done: null, ref: '', skipped: false };
+  componentDidMount() {
+    try { this.setState({ cfg: JSON.parse(localStorage.getItem('pl-site-config') || 'null') }); } catch (e) {}
+    import('./content.js').then(m => this.setState({ m }));
+  }
+  get door() { const q = new URLSearchParams(location.search).get('variant'); return q || (this.state.cfg && this.state.cfg.defaultVariant) || 'sales'; }
+  sections() {
+    const m = this.state.m; if (!m) return [];
+    const base = m.PREQUAL_FORM.sections; const door = m.DOOR_SECTIONS[this.door];
+    const out = [...base]; if (door) out.splice(2, 0, door); return out;
+  }
+  validate(section) {
+    const errors = {}; const a = this.state.answers;
+    section.questions.forEach(q => {
+      const v = a[q.id]; const empty = q.type === 'checkbox' ? !(v && v.length) : !(v && String(v).trim());
+      if (q.required && empty) errors[q.id] = 'Please answer “' + q.label + '”.';
+      else if (q.type === 'email' && v && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) errors[q.id] = 'Please enter a valid email address.';
+    });
+    return errors;
+  }
+  renderVals() {
+    const m = this.state.m; const cfg = this.state.cfg || {};
+    const sections = this.sections(); const step = Math.min(this.state.step, Math.max(sections.length - 1, 0));
+    const section = sections[step] || { kicker: '', heading: 'Loading…', note: '', questions: [] };
+    const variants = m ? { ...m.VARIANTS, ...Object.fromEntries(((cfg.customVariants) || []).map(v => [v.slug, v])) } : {};
+    const v = variants[this.door] || variants.sales || {};
+    const doorName = v.name || v.label || 'Premium Leads';
+    const bookingUrl = v.bookingUrl || cfg.bookingUrl || 'https://smart-scheduler.ai/fabp/booking/premiumleads-discovery';
+    const a = this.state.answers; const errors = this.state.errors;
+    const firstName = (a.fullName || '').trim().split(/\s+/)[0] || 'there';
+    const ext = 'pl:' + this.state.ref;
+    const prefilledBooking = bookingUrl + (bookingUrl.includes('?') ? '&' : '?') + 'name=' + encodeURIComponent(a.fullName || '') + '&email=' + encodeURIComponent((a.email || '').toLowerCase()) + '&external_id=' + encodeURIComponent(ext);
+    const titles = { contact: 'Contact', profile: 'Who you are', door: 'Your ' + (this.door === 'recruiting' ? 'hiring' : this.door === 'agency' ? 'agency' : this.door === 'founders' ? 'business' : this.door === 'enterprise' ? 'organization' : 'team'), goals: 'Goals', readiness: 'Timing', fit: 'Working together' };
+    const stepsNav = sections.map((s, i) => ({ n: String(i + 1), title: titles[s.id] || s.heading, bg: i === step ? 'rgba(30,136,229,.1)' : 'transparent', fg: i === step ? '#0C2E63' : (i < step ? '#0B2347' : '#6B7A90'), dotBg: i < step ? '#22C55E' : (i === step ? '#1E88E5' : 'rgba(11,35,71,.08)'), dotFg: i <= step ? '#fff' : '#6B7A90' })).concat([{ n: '✓', title: 'Book your call', bg: this.state.done ? 'rgba(30,136,229,.1)' : 'transparent', fg: this.state.done ? '#0C2E63' : '#6B7A90', dotBg: this.state.done ? '#1E88E5' : 'rgba(11,35,71,.08)', dotFg: this.state.done ? '#fff' : '#6B7A90' }]);
+    const questions = section.questions.map(q => {
+      const isOptions = q.type === 'radio' || q.type === 'checkbox'; const val = a[q.id] ?? (q.type === 'checkbox' ? [] : '');
+      return { ...q, value: val, span: q.width === 'half' ? 'auto' : '1 / -1', isText: !isOptions && q.type !== 'textarea', isTextarea: q.type === 'textarea', isOptions, radius: q.type === 'radio' ? '50%' : '4px', error: errors[q.id] || false, border: errors[q.id] ? '#B02A2A' : 'rgba(11,35,71,.15)', hint: q.hint || false,
+        opts: (q.options || []).map(o => { const on = q.type === 'checkbox' ? val.includes(o.value) : val === o.value; return { ...o, bg: on ? 'rgba(30,136,229,.08)' : '#fff', border: on ? '#1E88E5' : 'rgba(11,35,71,.14)', dotBorder: on ? '#1E88E5' : 'rgba(11,35,71,.3)', dotBg: on && q.type === 'checkbox' ? '#1E88E5' : '#fff', innerBg: on && q.type === 'radio' ? '#1E88E5' : 'transparent',
+          pick: () => { const next = q.type === 'checkbox' ? (on ? val.filter(x => x !== o.value) : [...val, o.value]) : o.value; this.setState({ answers: { ...a, [q.id]: next }, errors: { ...errors, [q.id]: undefined } }); } }; }) };
+    });
+    const isLast = step === sections.length - 1;
+    return {
+      backHref: 'Premium Leads.dc.html?variant=' + this.door, doorName, doorNameLower: doorName.toLowerCase(), bookingUrl, prefilledBooking, firstName, submissionRef: ext,
+      heading: v.ctaHeading || 'Ready to see your pipeline fill itself?', intro: 'A few questions so your advisor can prepare — then pick a time on the calendar. Nothing here is shared or published.',
+      stepsNav, section, questions, skipped: this.state.skipped && section.id === 'fit', stepNo: step + 1, stepCount: sections.length, isFirst: step === 0, nextLabel: isLast ? 'Finish & see next step →' : 'Continue →',
+      notDone: !this.state.done, isDone: !!this.state.done, doneBook: this.state.done === 'book', doneNurture: this.state.done === 'nurture',
+      onField: e => this.setState({ answers: { ...a, [e.target.name]: e.target.value }, errors: { ...errors, [e.target.name]: undefined } }),
+      back: () => this.setState({ step: Math.max(0, step - 1), errors: {} }),
+      next: () => {
+        const errs = this.validate(section); if (Object.keys(errs).length) { this.setState({ errors: errs }); return; }
+        if (section.id === 'contact') {
+          // Returning-client shortcut: same email already known → prefill the shared BVI answers.
+          try { const subs = JSON.parse(localStorage.getItem('pl-submissions') || '[]'); const prev = subs.find(s => (s.answers.email || '').toLowerCase() === (a.email || '').toLowerCase());
+            if (prev) { this.setState({ answers: { ...a, servicePreference: prev.answers.servicePreference, marketingBudget: prev.answers.marketingBudget }, skipped: true }); } } catch (e) {}
+        }
+        if (!isLast) { this.setState({ step: step + 1, errors: {} }); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+        const dest = m.routeSubmission(a); const ref = Date.now().toString(36).toUpperCase();
+        const sub = { id: ref, createdAt: new Date().toISOString(), variantSlug: this.door, source: 'pl_form', routingDestination: dest, answers: { ...a, email: (a.email || '').toLowerCase().trim() }, sync: { authorityDesk: 'synced', brandVoice: 'card_created', bviIntervieweeId: 'bvi-' + ref.toLowerCase() }, status: dest === 'nurture' ? 'nurture' : 'qualified' };
+        try { const subs = JSON.parse(localStorage.getItem('pl-submissions') || '[]'); subs.unshift(sub); localStorage.setItem('pl-submissions', JSON.stringify(subs)); } catch (e) {}
+        this.setState({ done: dest, ref }); window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

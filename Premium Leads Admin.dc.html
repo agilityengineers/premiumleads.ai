@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Premium Leads — Admin</title>
+<link rel="icon" href="assets/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F1F5FA;color:#0B2347;font-family:Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#1E88E5;text-decoration:none}a:hover{color:#0C2E63}
+input,textarea,select{font-family:inherit}
+input:focus,textarea:focus,select:focus{outline:2px solid #1E88E5;outline-offset:1px}
+button:disabled{opacity:.5;cursor:not-allowed !important}
+</style>
+</helmet>
+
+<sc-if value="{{ notAuthed }}" hint-placeholder-val="{{ false }}">
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:#F1F5FA;background-image:radial-gradient(700px 400px at 90% 0%, rgba(0,178,239,.14), transparent 60%)">
+  <form onSubmit="{{ login }}" style="width:100%;max-width:400px;display:grid;gap:18px">
+    <div style="text-align:center"><img src="assets/logo-wordmark.png" alt="Premium Leads" style="width:220px;height:auto"><div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#6B7A90;margin-top:10px">Site admin</div></div>
+    <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:28px;display:grid;gap:14px;box-shadow:0 30px 60px -40px rgba(12,46,99,.4)">
+      <h1 style="font-family:Sora,sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;margin:0">Sign in</h1>
+      <p style="margin:0;font-size:14px;color:#4A5B74;line-height:1.5">Manage landing pages, leads, users and integrations from one place.</p>
+      <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Email<input type="email" name="email" value="{{ loginForm.email }}" onChange="{{ onLogin }}" autoComplete="username" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+      <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Password<input type="password" name="password" value="{{ loginForm.password }}" onChange="{{ onLogin }}" autoComplete="current-password" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+      <sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#B02A2A;font-weight:600">{{ loginError }}</div></sc-if>
+      <button type="submit" style="cursor:pointer;background:#0C2E63;color:#fff;border:0;border-radius:9px;padding:13px;font-weight:700;font-size:15px;font-family:inherit;transition:background .2s" style-hover="background:#1E88E5">Sign in</button>
+    </div>
+    <div style="text-align:center;font-size:13px"><a href="Premium Leads.dc.html" style="font-weight:700;color:#0B2347">← Back to the site</a></div>
+  </form>
+</div>
+</sc-if>
+<sc-if value="{{ authed }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh">
+  <aside style="background:#0D1B2E;color:#E6EEF8;padding:22px 16px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;box-sizing:border-box">
+    <img src="assets/logo-wordmark-white.png" alt="Premium Leads" style="width:100%;height:auto;align-self:flex-start;margin:4px 0 18px">
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="6">
+      <div style="display:contents">
+        <sc-if value="{{ n.sectionLabel }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(230,238,248,.4);padding:14px 12px 6px">{{ n.sectionLabel }}</div></sc-if>
+        <button type="button" onClick="{{ n.go }}" title="{{ n.hint }}" style="text-align:left;cursor:pointer;border:0;border-radius:9px;padding:10px 12px;font-size:14px;font-weight:600;font-family:inherit;display:flex;justify-content:space-between;align-items:center;background:{{ n.bg }};color:{{ n.fg }}">{{ n.label }}<span style="font-size:11px;font-weight:700;opacity:.6">{{ n.badge }}</span></button>
+      </div>
+    </sc-for>
+    <div style="margin-top:auto;display:grid;gap:8px">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:9px;background:rgba(230,238,248,.06)">
+        <span style="flex:none;width:30px;height:30px;border-radius:50%;background:#1E88E5;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">{{ me.initials }}</span>
+        <span style="min-width:0"><span style="display:block;font-size:12.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ me.name }}</span><span style="display:block;font-size:11px;color:rgba(230,238,248,.55)">{{ me.roleLabel }}</span></span>
+        <button type="button" onClick="{{ logout }}" title="Sign out" style="margin-left:auto;cursor:pointer;background:none;border:0;color:rgba(230,238,248,.6);font-size:12px;font-weight:700;font-family:inherit" style-hover="color:#fff">Sign out</button>
+      </div>
+      <a href="Premium Leads.dc.html" style="display:block;text-align:center;border:1px solid rgba(230,238,248,.2);border-radius:9px;padding:10px;font-size:13.5px;font-weight:700;color:#E6EEF8" style-hover="background:rgba(230,238,248,.08);color:#fff">View site ↗</a>
+      <div style="font-size:12px;color:rgba(230,238,248,.5);text-align:center">{{ saveState }}</div>
+    </div>
+  </aside>
+
+  <main style="padding:36px 40px;display:grid;gap:24px;align-content:start">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
+      <div style="max-width:640px">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1E88E5;margin-bottom:6px">{{ tabEyebrow }}</div>
+        <h1 style="font-family:Sora,sans-serif;font-weight:700;font-size:28px;letter-spacing:-.02em;margin:0 0 6px">{{ tabTitle }}</h1>
+        <p style="margin:0;font-size:14.5px;line-height:1.55;color:#4A5B74">{{ tabDesc }}</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <sc-if value="{{ isPages }}" hint-placeholder-val="{{ true }}">
+          <button type="button" onClick="{{ toggleBlank }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);color:#33465F;border-radius:9px;padding:10px 16px;font-weight:700;font-size:14px;font-family:inherit">+ New blank page</button>
+          <button type="button" onClick="{{ toggleAi }}" style="cursor:pointer;background:#1E88E5;color:#fff;border:0;border-radius:9px;padding:10px 16px;font-weight:700;font-size:14px;font-family:inherit">✦ Generate with AI</button>
+        </sc-if>
+        <button type="button" onClick="{{ saveCfg }}" style="cursor:pointer;background:#0C2E63;color:#fff;border:0;border-radius:9px;padding:10px 18px;font-weight:700;font-size:14px;font-family:inherit;transition:background .2s" style-hover="background:#1E88E5">Save &amp; publish</button>
+      </div>
+    </div>
+
+    <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:12px">
+        <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="5">
+          <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:14px;padding:18px 20px"><div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6B7A90">{{ t.l }}</div><div style="font-family:Sora,sans-serif;font-weight:700;font-size:28px;letter-spacing:-.02em;margin-top:6px;color:#0B2347">{{ t.v }}</div><div style="font-size:12.5px;color:#6B7A90;margin-top:2px">{{ t.s }}</div></div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px">
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden">
+          <div style="padding:14px 20px;border-bottom:1px solid rgba(11,35,71,.08);font-weight:700;font-size:15px">Integration health</div>
+          <sc-for list="{{ health }}" as="h" hint-placeholder-count="5">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid rgba(11,35,71,.06)"><span style="font-size:14px;font-weight:600">{{ h.name }}</span><span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:{{ h.fg }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ h.dot }}"></span>{{ h.status }}</span></div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden">
+          <div style="padding:14px 20px;border-bottom:1px solid rgba(11,35,71,.08);font-weight:700;font-size:15px">Recent activity</div>
+          <sc-if value="{{ noActivity }}" hint-placeholder-val="{{ false }}"><div style="padding:20px;font-size:13.5px;color:#6B7A90">Nothing yet — saves, sign-ins and new leads show up here.</div></sc-if>
+          <sc-for list="{{ activity }}" as="e" hint-placeholder-count="0">
+            <div style="padding:11px 20px;border-bottom:1px solid rgba(11,35,71,.06);font-size:13.5px;display:flex;justify-content:space-between;gap:12px"><span>{{ e.text }}</span><span style="color:#6B7A90;white-space:nowrap">{{ e.when }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;gap:16px;max-width:960px">
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:20px 24px;display:grid;gap:12px">
+          <div style="font-weight:700;font-size:15px">Invite a user</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;align-items:end">
+            <label style="display:grid;gap:5px;font-size:12.5px;font-weight:700;color:#33465F">Name<input name="name" value="{{ newUser.name }}" onChange="{{ onNewUser }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:10px 12px;font-size:14px"></label>
+            <label style="display:grid;gap:5px;font-size:12.5px;font-weight:700;color:#33465F">Email<input name="email" type="email" value="{{ newUser.email }}" onChange="{{ onNewUser }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:10px 12px;font-size:14px"></label>
+            <label style="display:grid;gap:5px;font-size:12.5px;font-weight:700;color:#33465F">Role<select name="role" value="{{ newUser.role }}" onChange="{{ onNewUser }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:10px 12px;font-size:14px;background:#fff"><option value="super">Super admin</option><option value="admin">Admin</option><option value="advisor">Advisor (leads only)</option></select></label>
+            <button type="button" onClick="{{ inviteUser }}" disabled="{{ inviteDisabled }}" style="cursor:pointer;background:#0C2E63;color:#fff;border:0;border-radius:9px;padding:11px 16px;font-weight:700;font-size:14px;font-family:inherit">Send invite</button>
+          </div>
+          <div style="font-size:12.5px;color:#6B7A90;line-height:1.5"><strong style="color:#33465F">Super admin</strong> — everything, including users and integrations. <strong style="color:#33465F">Admin</strong> — pages, resources, settings and leads. <strong style="color:#33465F">Advisor</strong> — leads only; sees the same contacts in The Authority Desk and Brand Voice Interview once linked by email.</div>
+        </div>
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden">
+          <sc-for list="{{ users }}" as="u" hint-placeholder-count="2">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;padding:13px 20px;border-bottom:1px solid rgba(11,35,71,.06);flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 260px"><span style="flex:none;width:34px;height:34px;border-radius:50%;background:{{ u.avatarBg }};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">{{ u.initials }}</span><span style="min-width:0"><span style="display:block;font-weight:700;font-size:14.5px">{{ u.name }} <span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:100px;background:{{ u.statusBg }};color:{{ u.statusFg }};margin-left:6px">{{ u.statusLabel }}</span></span><span style="display:block;font-size:12.5px;color:#6B7A90">{{ u.email }}</span></span></div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <select value="{{ u.role }}" onChange="{{ u.setRole }}" disabled="{{ u.isSelf }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:7px 10px;font-size:13px;background:#fff"><option value="super">Super admin</option><option value="admin">Admin</option><option value="advisor">Advisor</option></select>
+                <button type="button" onClick="{{ u.resetPw }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);color:#33465F;border-radius:8px;padding:7px 11px;font-weight:700;font-size:13px;font-family:inherit">Reset password</button>
+                <sc-if value="{{ u.canRemove }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ u.remove }}" style="cursor:pointer;background:#fff;border:1px solid rgba(180,40,40,.3);color:#B02A2A;border-radius:8px;padding:7px 11px;font-weight:700;font-size:13px;font-family:inherit">Remove</button></sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:12.5px;color:#6B7A90">{{ pwNote }}</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isIntegrations }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;gap:16px;max-width:960px">
+        <sc-for list="{{ integrations }}" as="g" hint-placeholder-count="6">
+          <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:22px 24px;display:grid;gap:14px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+              <div><div style="font-weight:700;font-size:16px">{{ g.name }}</div><div style="font-size:13.5px;color:#4A5B74;line-height:1.5;margin-top:3px;max-width:62ch">{{ g.desc }}</div></div>
+              <div style="display:flex;align-items:center;gap:10px"><span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:{{ g.fg }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ g.dot }}"></span>{{ g.status }}</span><button type="button" onClick="{{ g.test }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);color:#33465F;border-radius:8px;padding:7px 11px;font-weight:700;font-size:13px;font-family:inherit">{{ g.testLabel }}</button></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px">
+              <sc-for list="{{ g.fields }}" as="f" hint-placeholder-count="3">
+                <label style="display:grid;gap:5px;font-size:12.5px;font-weight:700;color:#33465F;grid-column:{{ f.span }}"><span>{{ f.label }}</span><input type="{{ f.type }}" name="{{ f.key }}" value="{{ f.value }}" placeholder="{{ f.placeholder }}" onChange="{{ g.onField }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:10px 12px;font-size:14px;font-family:{{ f.font }}"></label>
+              </sc-for>
+            </div>
+            <sc-if value="{{ g.hasToggles }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;gap:8px;border-top:1px solid rgba(11,35,71,.08);padding-top:12px">
+                <sc-for list="{{ g.toggles }}" as="t" hint-placeholder-count="3">
+                  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="font-size:14px;color:#0B2347">{{ t.label }}</span><button type="button" role="switch" aria-checked="{{ t.on }}" onClick="{{ t.toggle }}" style="cursor:pointer;width:40px;height:22px;border-radius:100px;border:0;padding:2px;background:{{ t.trackBg }};display:flex;justify-content:{{ t.justify }}"><span style="width:18px;height:18px;border-radius:50%;background:#fff;display:block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span></button></div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+        <div style="font-size:12.5px;color:#6B7A90;line-height:1.5">Secrets are write-only in production: stored encrypted on the server, shown here as •••• once saved, and never sent back to the browser.</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isPages }}" hint-placeholder-val="{{ true }}">
+      <sc-if value="{{ editing }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:24px;display:grid;gap:18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+            <div><div style="font-weight:700;font-size:16px">Edit page · {{ ed.label }}</div><div style="font-size:12.5px;color:#6B7A90;font-family:ui-monospace,monospace">/{{ ed.slug }}</div></div>
+            <div style="display:flex;gap:8px"><a href="{{ ed.href }}" style="font-size:13px;font-weight:700;padding:8px 12px;border:1px solid rgba(11,35,71,.12);border-radius:8px;color:#33465F">View ↗</a><button type="button" onClick="{{ closeEditor }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);color:#33465F;border-radius:8px;padding:8px 12px;font-weight:700;font-size:13px;font-family:inherit">Done</button></div>
+          </div>
+          <div style="font-size:13.5px;color:#4A5B74;line-height:1.55;background:#F1F5FA;border-radius:10px;padding:12px 14px">Every field below is what a new industry page needs. Lists use one entry per line, with <span style="font-family:ui-monospace,monospace">|</span> between parts. Leave a field blank to inherit the default copy.</div>
+          <sc-for list="{{ edGroups }}" as="g" hint-placeholder-count="6">
+            <details open="{{ g.open }}" style="border-top:1px solid rgba(11,35,71,.08);padding-top:12px">
+              <summary style="cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6B7A90;padding:4px 0 10px">{{ g.group }}<span style="font-size:11px;letter-spacing:0;text-transform:none;font-weight:600">{{ g.count }}</span></summary>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px">
+                <sc-for list="{{ g.fields }}" as="f" hint-placeholder-count="3">
+                  <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F;grid-column:{{ f.span }}">{{ f.label }}<textarea name="{{ f.key }}" value="{{ f.value }}" onChange="{{ onEd }}" rows="{{ f.rows }}" placeholder="{{ f.placeholder }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:10px 12px;font-size:14px;resize:vertical;line-height:1.45;font-family:inherit"></textarea></label>
+                </sc-for>
+              </div>
+            </details>
+          </sc-for>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid rgba(11,35,71,.08);padding-top:16px">
+            <label style="display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:#33465F;cursor:pointer"><input type="checkbox" checked="{{ ed.published }}" onChange="{{ togglePublishedEd }}" style="width:18px;height:18px;accent-color:#1E88E5">Published (visible at /{{ ed.slug }})</label>
+            <sc-if value="{{ ed.deletable }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ deleteEd }}" style="cursor:pointer;background:#fff;border:1px solid rgba(180,40,40,.3);color:#B02A2A;border-radius:8px;padding:8px 12px;font-weight:700;font-size:13px;font-family:inherit">Delete page</button></sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showAi }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:24px;display:grid;gap:14px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+            <div><div style="font-weight:700;font-size:16px">Generate a page with AI</div><p style="margin:4px 0 0;font-size:14px;color:#4A5B74;line-height:1.5;max-width:64ch">Name the audience or industry and the model writes a full draft — page copy, SEO text and a social-share image — into the same content schema as every other page. You review and publish it when it reads right.</p></div>
+            <button type="button" onClick="{{ toggleAi }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);color:#33465F;border-radius:8px;padding:8px 12px;font-weight:700;font-size:13px;font-family:inherit">Cancel</button>
+          </div>
+          <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Audience / industry (e.g. "Logistics sales teams")<input value="{{ gen.name }}" name="name" onChange="{{ onGen }}" placeholder="Dental practice owners" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+          <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Notes / angle (optional)<textarea value="{{ gen.notes }}" name="notes" onChange="{{ onGen }}" rows="{{ 3 }}" placeholder="Emphasize the dialer and voicemail drops; buyers are hard to reach by email." style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px;resize:vertical"></textarea></label>
+          <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Model
+              <select value="{{ gen.provider }}" name="provider" onChange="{{ onGen }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:10px 12px;font-size:14px;background:#fff"><option value="anthropic">Claude (Anthropic)</option><option value="openai">GPT (OpenAI)</option></select>
+            </label>
+            <button type="button" onClick="{{ generate }}" disabled="{{ genDisabled }}" style="cursor:pointer;background:#1E88E5;color:#fff;border:0;border-radius:9px;padding:11px 18px;font-weight:700;font-size:14px;font-family:inherit">{{ genLabel }}</button>
+            <sc-if value="{{ genBusy }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:#6B7A90">Writing the page copy, SEO text and a social-share image — this can take up to a minute.</span></sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showBlank }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:24px;display:grid;gap:14px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+            <div><div style="font-weight:700;font-size:16px">New blank page</div><p style="margin:4px 0 0;font-size:14px;color:#4A5B74;line-height:1.5">Starts from the default copy with the audience swapped in. You edit everything else by hand.</p></div>
+            <button type="button" onClick="{{ toggleBlank }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);color:#33465F;border-radius:8px;padding:8px 12px;font-weight:700;font-size:13px;font-family:inherit">Cancel</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:14px">
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Label<input value="{{ blank.label }}" name="label" onChange="{{ onBlank }}" placeholder="Logistics sales teams" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Audience<input value="{{ blank.audience }}" name="audience" onChange="{{ onBlank }}" placeholder="logistics sales teams" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">URL slug<input value="{{ blank.slug }}" name="slug" onChange="{{ onBlank }}" placeholder="{{ blankSlug }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px;font-family:ui-monospace,monospace"></label>
+          </div>
+          <div style="font-size:13px;color:#6B7A90">Will be served at <span style="font-family:ui-monospace,monospace;color:#0B2347">/{{ blankSlug }}</span><sc-if value="{{ blankTaken }}" hint-placeholder-val="{{ false }}"><span style="color:#B02A2A"> — that slug is already taken.</span></sc-if></div>
+          <div><button type="button" onClick="{{ createBlank }}" disabled="{{ blankDisabled }}" style="cursor:pointer;background:#0C2E63;color:#fff;border:0;border-radius:9px;padding:11px 18px;font-weight:700;font-size:14px;font-family:inherit">Create &amp; edit</button></div>
+        </div>
+      </sc-if>
+
+      <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden">
+        <sc-for list="{{ pages }}" as="p" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 20px;border-bottom:1px solid rgba(11,35,71,.06);flex-wrap:wrap">
+            <button type="button" onClick="{{ p.edit }}" style="cursor:pointer;background:none;border:0;padding:0;text-align:left;display:flex;align-items:center;gap:12px;min-width:min(100%,280px);flex:1 1 280px;font-family:inherit">
+              <span style="flex:none;width:36px;height:36px;border-radius:50%;background:{{ p.dot }}"></span>
+              <span style="min-width:0">
+                <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-weight:700;font-size:15px;color:#0B2347">{{ p.label }}</span><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;background:{{ p.tagBg }};color:{{ p.tagFg }}">{{ p.tag }}</span></span>
+                <span style="display:block;font-size:13px;color:#6B7A90">{{ p.audience }} <span style="font-family:ui-monospace,monospace;opacity:.8">· /{{ p.slug }}</span></span>
+              </span>
+            </button>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span style="font-size:12.5px;color:#6B7A90;margin-right:6px"><span style="font-weight:700;color:#0B2347">{{ p.clicks }}</span> CTA clicks</span>
+              <a href="{{ p.href }}" style="font-size:13px;font-weight:700;padding:7px 11px;border:1px solid rgba(11,35,71,.12);border-radius:8px;color:#33465F">View ↗</a>
+              <sc-if value="{{ p.notDefault }}" hint-placeholder-val="{{ true }}">
+                <button type="button" onClick="{{ p.togglePublish }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);color:#33465F;border-radius:8px;padding:7px 11px;font-weight:700;font-size:13px;font-family:inherit">{{ p.pubLabel }}</button>
+                <button type="button" onClick="{{ p.makeDefault }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);color:#33465F;border-radius:8px;padding:7px 11px;font-weight:700;font-size:13px;font-family:inherit">Make home</button>
+              </sc-if>
+              <button type="button" onClick="{{ p.edit }}" style="cursor:pointer;background:#0C2E63;color:#fff;border:0;border-radius:8px;padding:7px 12px;font-weight:700;font-size:13px;font-family:inherit">Edit</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCaps }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden">
+        <sc-for list="{{ caps }}" as="c" hint-placeholder-count="10">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid rgba(11,35,71,.06)">
+            <div><div style="font-weight:700;font-size:14.5px">{{ c.title }}</div><div style="font-size:13px;color:#6B7A90">{{ c.group }}</div></div>
+            <button type="button" role="switch" aria-checked="{{ c.on }}" onClick="{{ c.toggle }}" style="cursor:pointer;width:46px;height:26px;border-radius:100px;border:0;padding:3px;background:{{ c.trackBg }};display:flex;justify-content:{{ c.justify }};transition:background .2s"><span style="width:20px;height:20px;border-radius:50%;background:#fff;display:block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span></button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:24px;display:grid;gap:18px;max-width:720px">
+        <div style="display:grid;gap:8px">
+          <div style="font-size:13px;font-weight:700;color:#33465F">What the primary buttons do</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" onClick="{{ setPrequal }}" style="cursor:pointer;border:1px solid rgba(11,35,71,.12);border-radius:9px;padding:10px 14px;font-weight:700;font-size:13.5px;font-family:inherit;background:{{ prequalBg }};color:{{ prequalFg }}">Pre-qualify, then book</button>
+            <button type="button" onClick="{{ setBookCall }}" style="cursor:pointer;border:1px solid rgba(11,35,71,.12);border-radius:9px;padding:10px 14px;font-weight:700;font-size:13.5px;font-family:inherit;background:{{ bookBg }};color:{{ bookFg }}">Book a call directly</button>
+          </div>
+          <div style="font-size:12.5px;color:#6B7A90;line-height:1.5">“Pre-qualify” sends every Get started button to the intake form (with the landing page as the door); the form routes to the calendar or to nurture. “Book directly” links straight to the booking URL and shows the simple contact form.</div>
+        </div>
+        <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Booking URL (all “Book a call” CTAs)<input value="{{ cfg.bookingUrl }}" name="bookingUrl" onChange="{{ onCfg }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+        <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Hero Vimeo video ID<input value="{{ cfg.vimeoId }}" name="vimeoId" onChange="{{ onCfg }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"><span style="font-weight:500;color:#6B7A90;font-size:12.5px">From vimeo.com/manage/videos/<em>ID</em>. Changing it swaps the hero embed on every page.</span></label>
+        <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Login URL<input value="{{ cfg.loginUrl }}" name="loginUrl" onChange="{{ onCfg }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+        <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Contact form recipient<input value="{{ cfg.contactEmail }}" name="contactEmail" onChange="{{ onCfg }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+        <div style="border-top:1px solid rgba(11,35,71,.08);padding-top:16px;display:grid;gap:14px">
+          <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6B7A90">Site, SEO &amp; legal</div>
+          <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Site title suffix<input value="{{ cfg.siteTitle }}" name="siteTitle" onChange="{{ onCfg }}" placeholder="Premium Leads" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+          <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Default share image URL<input value="{{ cfg.ogImage }}" name="ogImage" onChange="{{ onCfg }}" placeholder="https://premiumleads.ai/og.png" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Terms of service URL<input value="{{ cfg.termsUrl }}" name="termsUrl" onChange="{{ onCfg }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+            <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Privacy policy URL<input value="{{ cfg.privacyUrl }}" name="privacyUrl" onChange="{{ onCfg }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+          </div>
+          <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Footer attribution<input value="{{ cfg.footerNote }}" name="footerNote" onChange="{{ onCfg }}" placeholder="Premium Leads is a Find a Business Pro! application." style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px"></label>
+        </div>
+        <div><button type="button" onClick="{{ resetCfg }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);color:#33465F;border-radius:9px;padding:10px 16px;font-weight:700;font-size:14px;font-family:inherit">Reset everything to defaults</button></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSections }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden;max-width:720px">
+        <sc-for list="{{ sections }}" as="s" hint-placeholder-count="7">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 20px;border-bottom:1px solid rgba(11,35,71,.06)">
+            <div><div style="font-weight:700;font-size:14.5px">{{ s.title }}</div><div style="font-size:13px;color:#6B7A90">{{ s.note }}</div></div>
+            <button type="button" role="switch" aria-checked="{{ s.on }}" onClick="{{ s.toggle }}" style="cursor:pointer;width:46px;height:26px;border-radius:100px;border:0;padding:3px;background:{{ s.trackBg }};display:flex;justify-content:{{ s.justify }};transition:background .2s"><span style="width:20px;height:20px;border-radius:50%;background:#fff;display:block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span></button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isPricing }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;gap:16px;max-width:900px">
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px">
+          <div><div style="font-weight:700;font-size:14.5px">Show pricing section on the landing page</div><div style="font-size:13px;color:#6B7A90">Off by default — plans and billing live inside app.premiumleads.ai.</div></div>
+          <button type="button" role="switch" aria-checked="{{ pricingOn }}" onClick="{{ togglePricing }}" style="cursor:pointer;width:46px;height:26px;border-radius:100px;border:0;padding:3px;background:{{ pricingTrack }};display:flex;justify-content:{{ pricingJustify }};transition:background .2s"><span style="width:20px;height:20px;border-radius:50%;background:#fff;display:block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span></button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+          <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:20px;display:grid;gap:10px">
+              <input value="{{ t.name }}" onChange="{{ t.onName }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:9px 11px;font-size:15px;font-weight:700"><input value="{{ t.price }}" onChange="{{ t.onPrice }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:9px 11px;font-size:14px"><textarea value="{{ t.features }}" onChange="{{ t.onFeatures }}" rows="{{ 5 }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:9px 11px;font-size:13.5px;resize:vertical"></textarea>
+              <span style="font-size:12px;color:#6B7A90">One feature per line</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isResources }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;gap:16px;max-width:980px">
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:20px 24px;display:grid;gap:10px">
+          <div style="font-weight:700;font-size:15px">Add a resource</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <input value="{{ newUrl }}" onChange="{{ onNewUrl }}" placeholder="Paste a URL, e.g. https://theauthoritydesk.com" style="flex:1 1 320px;border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:11px 13px;font-size:14.5px">
+            <button type="button" onClick="{{ fetchResource }}" disabled="{{ fetching }}" style="cursor:pointer;background:#1E88E5;color:#fff;border:0;border-radius:9px;padding:11px 18px;font-weight:700;font-size:14px;font-family:inherit">{{ fetchLabel }}</button>
+          </div>
+          <div style="font-size:13px;color:#6B7A90;line-height:1.5">We take a snapshot of the page and pull its title, description and key points into a draft card. Edit anything below, then Save &amp; publish.</div>
+        </div>
+        <sc-for list="{{ resources }}" as="r" hint-placeholder-count="3">
+          <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden;display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr)">
+            <div style="position:relative;background:linear-gradient(135deg,#0C2E63,#1E88E5);min-height:200px;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px">
+              <span style="font-size:12.5px;font-weight:700;color:rgba(255,255,255,.85);line-height:1.4">{{ r.snapNote }}</span>
+              <img src="{{ r.snapshot }}" alt="" loading="lazy" onError="{{ r.hideImg }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top">
+              <button type="button" onClick="{{ r.refetch }}" style="position:absolute;left:10px;bottom:10px;cursor:pointer;background:rgba(13,27,46,.85);color:#fff;border:0;border-radius:7px;padding:6px 10px;font-size:12px;font-weight:700;font-family:inherit">↻ Re-snapshot</button>
+            </div>
+            <div style="padding:18px 20px;display:grid;gap:12px;align-content:start">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;font-weight:700;color:#33465F">Show on landing pages</span><button type="button" role="switch" aria-checked="{{ r.on }}" onClick="{{ r.toggleFeatured }}" style="cursor:pointer;width:40px;height:22px;border-radius:100px;border:0;padding:2px;background:{{ r.trackBg }};display:flex;justify-content:{{ r.justify }}"><span style="width:18px;height:18px;border-radius:50%;background:#fff;display:block;box-shadow:0 1px 3px rgba(0,0,0,.3)"></span></button></div>
+                <div style="display:flex;gap:6px"><button type="button" onClick="{{ r.up }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;font-family:inherit;color:#33465F">↑</button><button type="button" onClick="{{ r.down }}" style="cursor:pointer;background:#fff;border:1px solid rgba(11,35,71,.12);border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;font-family:inherit;color:#33465F">↓</button><button type="button" onClick="{{ r.remove }}" style="cursor:pointer;background:#fff;border:1px solid rgba(180,40,40,.3);color:#B02A2A;border-radius:7px;padding:5px 9px;font-size:12px;font-weight:700;font-family:inherit">Remove</button></div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px">
+                <label style="display:grid;gap:5px;font-size:12.5px;font-weight:700;color:#33465F">Name<input name="name" value="{{ r.name }}" onChange="{{ r.onField }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:9px 11px;font-size:14px"></label>
+                <label style="display:grid;gap:5px;font-size:12.5px;font-weight:700;color:#33465F">Category<input name="category" value="{{ r.category }}" onChange="{{ r.onField }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:9px 11px;font-size:14px"></label>
+                <label style="display:grid;gap:5px;font-size:12.5px;font-weight:700;color:#33465F;grid-column:1/-1">URL<input name="url" value="{{ r.url }}" onChange="{{ r.onField }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:9px 11px;font-size:14px;font-family:ui-monospace,monospace"></label>
+              </div>
+              <label style="display:grid;gap:5px;font-size:12.5px;font-weight:700;color:#33465F">Tagline<input name="tagline" value="{{ r.tagline }}" onChange="{{ r.onField }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:9px 11px;font-size:14px"></label>
+              <label style="display:grid;gap:5px;font-size:12.5px;font-weight:700;color:#33465F">What it does<textarea name="description" value="{{ r.description }}" onChange="{{ r.onField }}" rows="{{ 3 }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:9px 11px;font-size:14px;resize:vertical;line-height:1.45"></textarea></label>
+              <label style="display:grid;gap:5px;font-size:12.5px;font-weight:700;color:#33465F">Highlights (one per line)<textarea name="highlights" value="{{ r.highlightsText }}" onChange="{{ r.onField }}" rows="{{ 3 }}" style="border:1px solid rgba(11,35,71,.15);border-radius:8px;padding:9px 11px;font-size:14px;resize:vertical;line-height:1.45"></textarea></label>
+            </div>
+          </div>
+        </sc-for>
+        <a href="Premium Leads Resources.dc.html" style="font-size:14px;font-weight:700">Preview the resources page →</a>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;gap:16px;max-width:900px">
+        <sc-for list="{{ formSections }}" as="s" hint-placeholder-count="5">
+          <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden">
+            <div style="padding:14px 20px;border-bottom:1px solid rgba(11,35,71,.08)"><div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#1E88E5">{{ s.kicker }}</div><div style="font-weight:700;font-size:15px;margin-top:2px">{{ s.heading }}</div></div>
+            <sc-for list="{{ s.questions }}" as="q" hint-placeholder-count="3">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid rgba(11,35,71,.06);flex-wrap:wrap">
+                <div style="min-width:0"><div style="font-weight:600;font-size:14px">{{ q.label }}</div><div style="font-size:12px;color:#6B7A90;font-family:ui-monospace,monospace">{{ q.id }} · {{ q.typeLabel }} {{ q.optCount }}</div></div>
+                <sc-if value="{{ q.lock }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:100px;background:{{ q.lockBg }};color:{{ q.lockFg }}">{{ q.lock }}</span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden">
+          <div style="padding:14px 20px;border-bottom:1px solid rgba(11,35,71,.08)"><div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#1E88E5">02b · Door-specific section</div><div style="font-weight:700;font-size:15px;margin-top:2px">Inserted based on the landing page the prospect came through</div></div>
+          <sc-for list="{{ doorSections }}" as="d" hint-placeholder-count="5">
+            <div style="padding:11px 20px;border-bottom:1px solid rgba(11,35,71,.06)"><div style="font-weight:600;font-size:14px">{{ d.name }}</div><div style="font-size:12.5px;color:#6B7A90">{{ d.qs }}</div></div>
+          </sc-for>
+        </div>
+        <div style="font-size:13px;color:#6B7A90;line-height:1.5">In production this is the same form builder as The Authority Desk (reword, reorder, add questions; system questions cannot be removed; locked values cannot change). <a href="Premium Leads Get Started.dc.html?variant=sales">Preview the form →</a></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isLeads }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ noLeads }}" hint-placeholder-val="{{ false }}"><div style="background:#fff;border:1px dashed rgba(11,35,71,.2);border-radius:16px;padding:40px;text-align:center;color:#6B7A90;font-size:14.5px">No submissions yet. <a href="Premium Leads Get Started.dc.html?variant=sales">Try the form</a> and the lead will appear here.</div></sc-if>
+      <div style="display:grid;gap:10px">
+        <sc-for list="{{ leads }}" as="l" hint-placeholder-count="0">
+          <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:14px;overflow:hidden">
+            <button type="button" onClick="{{ l.toggle }}" style="width:100%;cursor:pointer;background:none;border:0;padding:14px 20px;text-align:left;display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.4fr) minmax(0,1.2fr) auto;gap:14px;align-items:center;font-family:inherit;color:#0B2347">
+              <span style="min-width:0"><span style="display:block;font-weight:700;font-size:14.5px">{{ l.name }} <span style="font-weight:500;color:#6B7A90">· {{ l.company }}</span></span><span style="display:block;font-size:12.5px;color:#6B7A90">{{ l.email }} · {{ l.when }}</span></span>
+              <span style="font-size:12.5px;color:#4A5B74"><span style="display:block;font-weight:700;color:#0B2347">{{ l.door }}</span>{{ l.clientType }}</span>
+              <span style="font-size:12.5px;color:#4A5B74"><span style="display:block;font-weight:700;color:#0B2347">{{ l.budget }}</span>{{ l.readiness }}</span>
+              <span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span style="font-size:11px;font-weight:700;padding:3px 8px;border-radius:100px;background:{{ l.statusBg }};color:{{ l.statusFg }}">{{ l.statusLabel }}</span><span title="Authority Desk" style="font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:100px;background:rgba(34,197,94,.15);color:#15803D">AD ✓</span><span title="Brand Voice Interview" style="font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:100px;background:rgba(34,197,94,.15);color:#15803D">BVI ✓</span></span>
+            </button>
+            <sc-if value="{{ l.open }}" hint-placeholder-val="{{ false }}">
+              <div style="border-top:1px solid rgba(11,35,71,.08);padding:16px 20px;display:grid;gap:14px">
+                <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:#6B7A90"><span>Ref <span style="font-family:ui-monospace,monospace;color:#0B2347">pl:{{ l.id }}</span></span><span>Routing <span style="color:#0B2347;font-weight:600">{{ l.routingDestination }}</span></span><span>Brand Voice card <span style="font-family:ui-monospace,monospace;color:#0B2347">{{ l.bvi }}</span></span><span>Working style <span style="color:#0B2347;font-weight:600">{{ l.pref }}</span></span></div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px">
+                  <sc-for list="{{ l.detail }}" as="d" hint-placeholder-count="6"><div style="background:#F1F5FA;border-radius:9px;padding:9px 12px"><div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7A90;font-family:ui-monospace,monospace">{{ d.k }}</div><div style="font-size:13.5px;color:#0B2347;line-height:1.45">{{ d.v }}</div></div></sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isTraffic }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden;max-width:720px">
+        <div style="display:grid;grid-template-columns:1fr auto;padding:12px 20px;border-bottom:1px solid rgba(11,35,71,.08);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6B7A90"><span>Page</span><span>CTA clicks</span></div>
+        <sc-for list="{{ pages }}" as="p" hint-placeholder-count="5">
+          <div style="display:grid;grid-template-columns:1fr auto;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(11,35,71,.06);font-size:14px"><span style="font-weight:600">{{ p.label }} <span style="font-family:ui-monospace,monospace;color:#6B7A90;font-size:12.5px">/{{ p.slug }}</span></span><span style="font-weight:700">{{ p.clicks }}</span></div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </main>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  static DEFAULTS = {
+    defaultVariant: 'sales',
+    bookingUrl: 'https://smart-scheduler.ai/fabp/booking/premiumleads-discovery',
+    vimeoId: '756896760',
+    loginUrl: 'https://app.premiumleads.ai/auth/sign-in',
+    contactEmail: 'hello@premiumleads.ai',
+    ctaMode: 'prequalify',
+    siteTitle: 'Premium Leads', ogImage: '', termsUrl: '', privacyUrl: '', footerNote: 'Premium Leads is a Find a Business Pro! application.', integrations: {},
+    capabilities: {},
+    sections: { pricing: false },
+    customVariants: [],
+    overrides: {},
+    resources: null,
+    tiers: [
+      { name: 'Starter', price: 'Contact for pricing', features: 'LinkedIn + email sequences\nData enrichment\n1 user' },
+      { name: 'Growth', price: 'Contact for pricing', features: 'All channels incl. dialer & video\nCRM integrations\nUp to 10 users' },
+      { name: 'Scale', price: 'Custom', features: 'AI Employee\nWhite-label & multi-workspace\nUnlimited users' }
+    ]
+  };
+  static BUILTIN = [
+    { slug: 'sales', label: 'Sales teams & SDRs', audience: 'sales teams', dot: 'linear-gradient(135deg,#1E88E5,#0C2E63)' },
+    { slug: 'recruiting', label: 'Recruiting & talent', audience: 'recruiters and talent-acquisition teams', dot: '#00B2EF' },
+    { slug: 'agency', label: 'Agencies & white-label', audience: 'agencies', dot: '#0C2E63' },
+    { slug: 'founders', label: 'Founders & solopreneurs', audience: 'founders and solopreneurs', dot: '#1E88E5' },
+    { slug: 'enterprise', label: 'Enterprise sales leaders', audience: 'enterprise sales organizations', dot: '#0D1B2E' }
+  ];
+  static CAPS = [
+    { key: 'aiEmployee', title: 'AI Employee', group: 'Engage' }, { key: 'linkedin', title: 'LinkedIn Outreach', group: 'Engage' }, { key: 'email', title: 'Email Sequences', group: 'Engage' }, { key: 'dialer', title: 'Dialer', group: 'Engage' }, { key: 'voicemail', title: 'Voicemail Drops', group: 'Engage' }, { key: 'enrichment', title: 'Data Enrichment', group: 'Identify' }, { key: 'chrome', title: 'Chrome Extension', group: 'Identify' }, { key: 'video', title: 'Video Messaging', group: 'Engage' }, { key: 'mobile', title: 'Mobile App', group: 'Engage' }, { key: 'crm', title: 'CRM Integrations', group: 'Integrate' }
+  ];
+  static SECTIONS = [
+    { key: 'trustStrip', title: 'Trust strip', note: 'Four proof phrases under the hero' }, { key: 'problem', title: 'Problem (villain)', note: 'External, internal and philosophical problems' }, { key: 'engine', title: 'Guide', note: 'Empathy statement + authority proof' }, { key: 'how', title: 'The plan', note: 'Dark 3-step band' }, { key: 'transformation', title: 'Stakes & success', note: 'Failure to avoid vs. transformation' }, { key: 'usecases', title: 'Use cases', note: 'Audience cards and role/industry chips' }, { key: 'integrations', title: 'Integrations row', note: 'Salesforce, HubSpot, Pipedrive…' }, { key: 'testimonials', title: 'Testimonials', note: 'Two client quotes' }, { key: 'testimonialAttribution', title: 'Testimonial attributions', note: 'Show names, roles and initials under quotes (off until real attributions are approved)', defaultOff: true }, { key: 'resources', title: 'Resources', note: 'Three featured complementary tools + link to /resources' }, { key: 'faq', title: 'FAQ', note: 'Six questions' }, { key: 'contactForm', title: 'Contact form', note: 'Name, email, company, phone, message' }
+  ];
+  static NAV = [
+    { key: 'overview', label: 'Overview', hint: 'How the site is doing', eyebrow: 'Dashboard', title: 'Overview', desc: 'Leads, traffic and integration health at a glance.' },
+    { section: 'Site', key: 'pages', label: 'Landing pages', hint: 'The home page and every audience version of it', eyebrow: 'Site', title: 'Landing pages', desc: 'The home page plus one version of it per industry or target audience, each at its own address. Drafts stay private until you publish them.' },
+    { key: 'caps', label: 'Capabilities', hint: 'Which product capabilities appear on the site', eyebrow: 'Site', title: 'Capability toggles', desc: 'Hidden capabilities are removed from the Capabilities grid on every page. Use this to include or exclude features as the platform evolves.' },
+    { key: 'sections', label: 'Sections', hint: 'Turn page sections on or off', eyebrow: 'Site', title: 'Sections', desc: 'Show or hide whole sections of the landing page template.' },
+    { key: 'resources', label: 'Resources', hint: 'Complementary apps shown on /resources', eyebrow: 'Site', title: 'Resources', desc: 'Complementary applications you use to support clients. Paste a URL — we snapshot the page and pull its title and description, then you refine the copy.' },
+    { section: 'Funnel', key: 'settings', label: 'Call to action', hint: 'Where the buttons send people', eyebrow: 'Funnel', title: 'Call to action & settings', desc: 'What the primary buttons do — pre-qualify first or book straight away — plus the booking link, hero video and login URL.' },
+    { key: 'form', label: 'Pre-qualification form', hint: 'What a prospect answers before booking', eyebrow: 'Funnel', title: 'Pre-qualification form', desc: 'The shared intake. Seven system questions and the two Brand Voice Interview-locked answer sets are fixed so submissions sync cleanly to The Authority Desk and Brand Voice Interview; everything else — including the door-specific section — is editable.' },
+    { key: 'pricing', label: 'Packages & pricing', hint: 'Tiers and whether they show', eyebrow: 'Funnel', title: 'Packages & pricing', desc: 'Pricing lives in the app. Turn the section on here only if you want tiers on the public page.' },
+    { section: 'People', key: 'leads', label: 'Leads', hint: 'Everyone who came through the form', eyebrow: 'People', title: 'Leads', desc: 'One person per email, whichever door they came through, with routing outcome and sync status in The Authority Desk and Brand Voice Interview.' },
+    { section: 'Account', key: 'users', label: 'Users & roles', hint: 'Who can sign in and what they see', eyebrow: 'Account', title: 'Users & roles', desc: 'Invite teammates and advisors. Advisors see leads only; admins run the site; super admins also manage users and integrations.', superOnly: true },
+    { key: 'integrations', label: 'Integrations', hint: 'SendGrid, Authority Desk, Brand Voice, scheduler, AI', eyebrow: 'Account', title: 'Integrations', desc: 'Keys, secrets and connection status for every system this site talks to.', superOnly: true },
+    { section: 'Insights', key: 'traffic', label: 'Traffic', hint: 'CTA clicks per page', eyebrow: 'Insights', title: 'Traffic', desc: 'Primary-CTA clicks recorded per landing page in this preview.' }
+  ];
+
+  static content = null;
+  static SEED_USERS = [{ id: 'u1', name: 'Clarence Williams', email: 'emailme@clarencewilliams.com', password: 'Success2026', role: 'super', status: 'active' }];
+  static INTEGRATIONS = [
+    { key: 'sendgrid', name: 'SendGrid', desc: 'Transactional email: lead confirmations, nurture follow-ups and advisor notifications.', fields: [['apiKey', 'API key', 'password', 'SG.…'], ['fromEmail', 'From email', 'email', 'hello@premiumleads.ai'], ['fromName', 'From name', 'text', 'Premium Leads'], ['replyTo', 'Reply-to', 'email', 'advisors@premiumleads.ai']], toggles: [['leadConfirm', 'Email the prospect a confirmation after the form'], ['nurtureSeq', 'Start the nurture sequence for “not ready yet” leads'], ['advisorNotify', 'Notify the assigned advisor on every new lead']] },
+    { key: 'authorityDesk', name: 'The Authority Desk', desc: 'Signed webhook relay. Every submission is sent here once; Authority Desk creates the Brand Voice Interview card and reports status back.', fields: [['eventsUrl', 'Events endpoint', 'url', 'https://theauthoritydesk.com/api/integrations/premium-leads/events'], ['secret', 'Shared secret (HMAC-SHA256)', 'password', '••••'], ['callbackUrl', 'Our callback URL (read-only)', 'url', 'https://premiumleads.ai/api/integrations/authority-desk/events']] },
+    { key: 'brandVoice', name: 'Brand Voice Interview', desc: 'Reached through The Authority Desk relay — no direct connection, so a person is only ever one card. Shown for status.', fields: [['bookingUrl', 'Interview booking link (shown to paid clients only)', 'url', 'https://smart-scheduler.ai/…/brand-voice-interview']] },
+    { key: 'scheduler', name: 'SmartScheduler', desc: 'Strategy-call booking link and the webhook that marks a lead “call booked”.', fields: [['strategyLink', 'Strategy call link', 'url', 'https://smart-scheduler.ai/fabp/booking/premiumleads-discovery'], ['webhookSecret', 'Webhook secret', 'password', '••••']] },
+    { key: 'ai', name: 'AI providers', desc: 'Used to generate landing-page variants, resource blurbs and SEO text.', fields: [['anthropicKey', 'Anthropic API key', 'password', 'sk-ant-…'], ['openaiKey', 'OpenAI API key (also used for share images)', 'password', 'sk-…'], ['model', 'Default model', 'text', 'claude-sonnet-4-5']] },
+    { key: 'app', name: 'Premium Leads app', desc: 'The product at app.premiumleads.ai — sign-in link, pricing and the Slack workspace already connected there.', fields: [['loginUrl', 'Sign-in URL', 'url', 'https://app.premiumleads.ai/auth/sign-in'], ['slackChannel', 'Slack channel for new leads', 'text', '#new-leads']] },
+    { key: 'analytics', name: 'Analytics & tracking', desc: 'Measurement IDs injected on every public page.', fields: [['ga4', 'GA4 measurement ID', 'text', 'G-XXXXXXX'], ['metaPixel', 'Meta pixel ID', 'text', ''], ['linkedinTag', 'LinkedIn Insight tag', 'text', '']] }
+  ];
+  state = { tab: 'overview', session: null, loginForm: { email: '', password: '' }, loginError: '', users: [], newUser: { name: '', email: '', role: 'advisor' }, pwNote: '', activity: [], tested: {}, leads: [], openLead: null, newUrl: '', fetching: false, cfg: null, dirty: false, savedAt: null, creating: null, editing: null, gen: { name: '', notes: '', provider: 'anthropic' }, genBusy: false, blank: { label: '', audience: '', slug: '' }, clicks: {} };
+
+  componentDidMount() {
+    import('./content.js').then(m => { Component.content = m; this.forceUpdate(); });
+    let cfg = null, clicks = {};
+    let leads = [], users = null, session = null, activity = [];
+    try { users = JSON.parse(localStorage.getItem('pl-users') || 'null'); session = JSON.parse(sessionStorage.getItem('pl-session') || 'null'); activity = JSON.parse(localStorage.getItem('pl-activity') || '[]'); } catch (e) {}
+    this.setState({ users: users || Component.SEED_USERS, session, activity });
+    try { cfg = JSON.parse(localStorage.getItem('pl-site-config') || 'null'); clicks = JSON.parse(localStorage.getItem('pl-cta-clicks') || '{}'); leads = JSON.parse(localStorage.getItem('pl-submissions') || '[]'); } catch (e) {}
+    this.setState({ leads });
+    const D = Component.DEFAULTS;
+    this.setState({ cfg: { ...D, ...(cfg || {}), sections: { ...D.sections, ...((cfg || {}).sections || {}) }, tiers: (cfg && cfg.tiers) || D.tiers, customVariants: (cfg && cfg.customVariants) || [], overrides: (cfg && cfg.overrides) || {} }, clicks });
+  }
+  log(text) { const activity = [{ text, at: new Date().toISOString() }, ...this.state.activity].slice(0, 30); localStorage.setItem('pl-activity', JSON.stringify(activity)); this.setState({ activity }); }
+  saveUsers(users) { localStorage.setItem('pl-users', JSON.stringify(users)); this.setState({ users }); }
+  patch(p) { this.setState({ cfg: { ...this.state.cfg, ...p }, dirty: true }); }
+  sw(on) { return { on, trackBg: on ? '#1E88E5' : 'rgba(11,35,71,.2)', justify: on ? 'flex-end' : 'flex-start' }; }
+  slugify(s) { return String(s || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
+  cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+
+  /* Mirrors server/ai.ts: re-skin the default copy for the audience. In production this is the model's JSON, validated against contentSchema. */
+  draftFor(name, audience, notes) {
+    const a = audience || name.toLowerCase();
+    const m = Component.content; const base = m ? m.VARIANTS.sales : {};
+    const full = {}; if (m) Object.keys(base).forEach(k => { if (!['short','name','kicker','desc'].includes(k)) full[k] = m.toText(k, base[k]); });
+    return { ...full,
+      trust: 'Built for ' + a + '\nVerified contact data\nHuman-paced automation\nReal-time reporting',
+      problemHeading: 'You do great work for your customers. The right ' + a.replace(/s$/, '') + ' buyers never hear about it.',
+      stakesHeading: 'Keep doing outreach by hand, and…', successHeading: 'With Premium Leads, ' + a + '…',
+      ucHeading: 'Built for ' + a + '.',
+      engineHeading: 'Every channel ' + a + ' already use — sequenced automatically.',
+      proofHeading: 'Results from teams like yours.',
+      ctaSub: 'Tell us about your goals as ' + a + ' and we\'ll show you what your first campaign looks like.',
+      eyebrow: 'Multi-channel engagement for ' + a,
+      h1a: 'Reach ' + a + ' first.', h1b: 'Every channel, one engine.',
+      sub: 'Premium Leads finds verified decision-makers in ' + a.replace(/ teams?$/, '') + ', engages them across LinkedIn, email, phone and video, and books the meeting — automatically.' + (notes ? ' ' + this.cap(notes.replace(/\.?$/, '.')) : ''),
+      capHeading: 'Everything ' + a + ' need to fill the pipeline.',
+      ctaHeading: 'Ready to put outbound on autopilot for ' + a + '?',
+      metaTitle: 'Premium Leads for ' + this.cap(a), metaDesc: 'Multi-channel lead generation built for ' + a + ': verified data, automated sequences and real-time reporting. Book a call.'
+    };
+  }
+  allPages(cfg) {
+    const built = Component.BUILTIN.map(b => ({ ...b, builtin: true, published: true, ...(cfg.overrides[b.slug] || {}) }));
+    return built.concat((cfg.customVariants || []).map(v => ({ dot: '#6B7A90', ...v, builtin: false })));
+  }
+  findPage(cfg, slug) { return this.allPages(cfg).find(p => p.slug === slug); }
+  updatePage(slug, p) {
+    const cfg = this.state.cfg;
+    if (Component.BUILTIN.some(b => b.slug === slug)) this.patch({ overrides: { ...cfg.overrides, [slug]: { ...(cfg.overrides[slug] || {}), ...p } } });
+    else this.patch({ customVariants: cfg.customVariants.map(v => v.slug === slug ? { ...v, ...p } : v) });
+  }
+
+  renderVals() {
+    const cfg = this.state.cfg || Component.DEFAULTS;
+    const me = this.state.session ? (this.state.users.find(u => u.email === this.state.session.email) || this.state.session) : null;
+    const roleLabels = { super: 'Super admin', admin: 'Admin', advisor: 'Advisor' };
+    const allowed = k => { if (!me) return false; if (me.role === 'advisor') return k === 'leads'; if (me.role === 'admin') return !(Component.NAV.find(n => n.key === k) || {}).superOnly; return true; };
+    const tab = allowed(this.state.tab) ? this.state.tab : (me && me.role === 'advisor' ? 'leads' : 'overview');
+    const nav = Component.NAV.find(n => n.key === tab) || Component.NAV[0];
+    const pagesRaw = this.allPages(cfg);
+    const capsOn = Component.CAPS.filter(c => cfg.capabilities[c.key] !== false).length;
+    const resources = cfg.resources || (m0 => m0 ? m0.DEFAULT_RESOURCES : [])(Component.content);
+    const badges = { leads: String(this.state.leads.length), resources: String(resources.length), pages: String(pagesRaw.length), caps: capsOn + '/' + Component.CAPS.length, pricing: cfg.sections.pricing ? 'On' : 'Off' };
+    const navItems = Component.NAV.filter(n => allowed(n.key)).map(n => ({ key: n.key, label: n.label, hint: n.hint, sectionLabel: n.section || false, badge: badges[n.key] || '', go: () => this.setState({ tab: n.key, editing: null }), bg: tab === n.key ? 'rgba(30,136,229,.22)' : 'transparent', fg: tab === n.key ? '#fff' : 'rgba(230,238,248,.75)' }));
+    const pages = pagesRaw.map(p => { const isDef = cfg.defaultVariant === p.slug; return {
+      ...p, href: 'Premium Leads.dc.html?variant=' + p.slug, clicks: this.state.clicks[p.slug] || 0, notDefault: !isDef,
+      tag: isDef ? 'Home page' : (p.published ? 'Published' : 'Draft'), tagBg: isDef ? '#0C2E63' : (p.published ? 'rgba(34,197,94,.15)' : 'rgba(217,119,6,.15)'), tagFg: isDef ? '#fff' : (p.published ? '#15803D' : '#B45309'),
+      pubLabel: p.published ? 'Unpublish' : 'Publish',
+      togglePublish: () => this.updatePage(p.slug, { published: !p.published }),
+      makeDefault: () => this.patch({ defaultVariant: p.slug }),
+      edit: () => this.setState({ editing: p.slug, creating: null })
+    }; });
+    const edRaw = this.state.editing ? this.findPage(cfg, this.state.editing) : null;
+    const ed = edRaw ? { eyebrow: '', h1a: '', h1b: '', sub: '', capHeading: '', ctaHeading: '', bookingUrl: '', metaTitle: '', metaDesc: '', ...edRaw, href: 'Premium Leads.dc.html?variant=' + edRaw.slug, deletable: !edRaw.builtin } : {};
+    const existing = pagesRaw.map(p => p.slug);
+    const m = Component.content;
+    const base = m ? m.VARIANTS[edRaw && edRaw.builtin ? edRaw.slug : 'sales'] || m.VARIANTS.sales : {};
+    const LONG = ['sub','faqs','quotes','steps','enginePoints','useCaseCols','capCopy','trust','stats','engineBody','ctaSub','metaDesc'];
+    const edGroups = (m && edRaw) ? m.CONTENT_MODEL.map((g, gi) => ({ group: g.group, open: gi < 2, count: g.fields.length + ' fields', fields: g.fields.map(([key, label]) => {
+      const raw = edRaw[key]; const val = raw == null || raw === '' ? '' : m.toText(key, raw);
+      const ph = key === 'slug' ? edRaw.slug : (base[key] != null ? m.toText(key, base[key]) : '');
+      return { key, label, value: val, placeholder: key === 'label' ? edRaw.label : ph, rows: LONG.includes(key) ? 5 : 2, span: LONG.includes(key) || key === 'sub' ? '1 / -1' : 'auto' };
+    }) })) : [];
+    const blankSlug = this.slugify(this.state.blank.slug || this.state.blank.label) || '…';
+    const blankTaken = existing.includes(blankSlug);
+    const intg = cfg.integrations || {};
+    const authed = !!me;
+    const since = iso => { const d = (Date.now() - new Date(iso)) / 60000; return d < 1 ? 'just now' : d < 60 ? Math.round(d) + 'm ago' : d < 1440 ? Math.round(d / 60) + 'h ago' : Math.round(d / 1440) + 'd ago'; };
+    const leads7 = this.state.leads.filter(l => Date.now() - new Date(l.createdAt) < 7 * 86400000).length;
+    const clicks = Object.values(this.state.clicks).reduce((s, n) => s + n, 0);
+    const okIf = cond => cond ? ['Connected', '#22C55E', '#15803D'] : ['Not configured', 'rgba(11,35,71,.25)', '#6B7A90'];
+    const health = Component.INTEGRATIONS.map(g => { const vals = intg[g.key] || {}; const filled = g.fields.some(([k]) => vals[k]); const s = g.key === 'brandVoice' ? ((intg.authorityDesk || {}).secret ? ['Via Authority Desk', '#22C55E', '#15803D'] : ['Waiting on Authority Desk', 'rgba(217,119,6,.8)', '#B45309']) : okIf(filled); return { name: g.name, status: s[0], dot: s[1], fg: s[2] }; });
+    return {
+      authed, notAuthed: !authed, me: me ? { ...me, initials: (me.name || me.email).split(/[\s@]+/).map(w => w[0]).join('').slice(0, 2).toUpperCase(), roleLabel: roleLabels[me.role] || me.role } : {},
+      loginForm: this.state.loginForm, loginError: this.state.loginError || false,
+      onLogin: e => this.setState({ loginForm: { ...this.state.loginForm, [e.target.name]: e.target.value }, loginError: '' }),
+      login: e => { e.preventDefault(); const { email, password } = this.state.loginForm; const u = this.state.users.find(x => x.email.toLowerCase() === email.trim().toLowerCase()); if (!u || u.password !== password) { this.setState({ loginError: 'That email and password don\'t match.' }); return; } if (u.status === 'invited') this.saveUsers(this.state.users.map(x => x.id === u.id ? { ...x, status: 'active' } : x)); const session = { email: u.email, name: u.name, role: u.role }; sessionStorage.setItem('pl-session', JSON.stringify(session)); this.setState({ session, loginForm: { email: '', password: '' } }); this.log(u.name + ' signed in'); },
+      logout: () => { sessionStorage.removeItem('pl-session'); this.setState({ session: null, tab: 'overview' }); },
+      isOverview: tab === 'overview', isUsers: tab === 'users', isIntegrations: tab === 'integrations',
+      tiles: [{ l: 'Leads · 7 days', v: String(leads7), s: this.state.leads.length + ' all time' }, { l: 'CTA clicks', v: String(clicks), s: 'across all pages' }, { l: 'Pages live', v: String(pagesRaw.filter(p => p.published).length), s: pagesRaw.length + ' total' }, { l: 'Capabilities on', v: String(capsOn), s: 'of ' + Component.CAPS.length }, { l: 'Users', v: String(this.state.users.length), s: this.state.users.filter(u => u.status === 'invited').length + ' pending invites' }],
+      health, activity: this.state.activity.map(e => ({ text: e.text, when: since(e.at) })), noActivity: this.state.activity.length === 0,
+      users: this.state.users.map(u => { const isSelf = me && u.email === me.email; const statusMap = { active: ['Active', 'rgba(34,197,94,.15)', '#15803D'], invited: ['Invited', 'rgba(217,119,6,.15)', '#B45309'] }; const st = statusMap[u.status] || statusMap.active; return { ...u, isSelf, initials: u.name.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase(), avatarBg: u.role === 'super' ? '#0C2E63' : u.role === 'admin' ? '#1E88E5' : '#00B2EF', statusLabel: st[0], statusBg: st[1], statusFg: st[2], canRemove: !isSelf && u.role !== 'super',
+        setRole: e => { this.saveUsers(this.state.users.map(x => x.id === u.id ? { ...x, role: e.target.value } : x)); this.log(u.name + ' is now ' + roleLabels[e.target.value]); },
+        resetPw: () => { const pw = 'Welcome' + Math.floor(1000 + Math.random() * 9000); this.saveUsers(this.state.users.map(x => x.id === u.id ? { ...x, password: pw } : x)); this.setState({ pwNote: 'Temporary password for ' + u.email + ': ' + pw + ' (in production this is emailed via SendGrid, never shown here).' }); this.log('Password reset for ' + u.email); },
+        remove: () => { this.saveUsers(this.state.users.filter(x => x.id !== u.id)); this.log(u.name + ' removed'); } }; }),
+      newUser: this.state.newUser, onNewUser: e => this.setState({ newUser: { ...this.state.newUser, [e.target.name]: e.target.value } }),
+      inviteDisabled: !this.state.newUser.name.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(this.state.newUser.email) || this.state.users.some(u => u.email.toLowerCase() === this.state.newUser.email.trim().toLowerCase()),
+      inviteUser: () => { const n = this.state.newUser; const pw = 'Welcome' + Math.floor(1000 + Math.random() * 9000); const u = { id: 'u' + Date.now().toString(36), name: n.name.trim(), email: n.email.trim().toLowerCase(), role: n.role, status: 'invited', password: pw }; this.saveUsers([...this.state.users, u]); this.setState({ newUser: { name: '', email: '', role: 'advisor' }, pwNote: 'Invite sent to ' + u.email + '. Temporary password: ' + pw + ' (emailed via SendGrid in production).' }); this.log('Invited ' + u.name + ' as ' + roleLabels[u.role]); },
+      pwNote: this.state.pwNote,
+      integrations: Component.INTEGRATIONS.map(g => { const vals = intg[g.key] || {}; const h = health.find(x => x.name === g.name); const tested = this.state.tested[g.key]; return { ...g, status: tested ? tested : h.status, dot: tested ? '#22C55E' : h.dot, fg: tested ? '#15803D' : h.fg, testLabel: tested ? 'Tested ✓' : 'Test connection',
+        fields: g.fields.map(([key, label, type, placeholder]) => ({ key, label, type, placeholder, value: vals[key] || '', span: type === 'url' ? '1 / -1' : 'auto', font: type === 'url' || type === 'password' ? 'ui-monospace, monospace' : 'inherit' })),
+        onField: e => this.patch({ integrations: { ...intg, [g.key]: { ...vals, [e.target.name]: e.target.value } } }),
+        hasToggles: !!(g.toggles && g.toggles.length), toggles: (g.toggles || []).map(([k, label]) => { const on = vals[k] !== false; return { label, ...this.sw(on), toggle: () => this.patch({ integrations: { ...intg, [g.key]: { ...vals, [k]: !on } } }) }; }),
+        test: () => { this.setState({ tested: { ...this.state.tested, [g.key]: 'Connected' } }); this.log('Tested ' + g.name + ' connection'); } }; }),
+      navItems, tabEyebrow: nav.eyebrow, tabTitle: nav.title, tabDesc: nav.desc,
+      isPages: tab === 'pages', isCaps: tab === 'caps', isSettings: tab === 'settings', isSections: tab === 'sections', isPricing: tab === 'pricing', isTraffic: tab === 'traffic',
+      saveState: this.state.dirty ? 'Unsaved changes' : (this.state.savedAt ? 'Published ' + this.state.savedAt : 'All changes published'),
+      saveCfg: () => { localStorage.setItem('pl-site-config', JSON.stringify(this.state.cfg)); this.setState({ dirty: false, savedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }); this.log('Site changes published'); },
+      resetCfg: () => this.setState({ cfg: JSON.parse(JSON.stringify(Component.DEFAULTS)), dirty: true, editing: null }),
+      cfg, onCfg: e => this.patch({ [e.target.name]: e.target.value }),
+      pages,
+      showAi: this.state.creating === 'ai', showBlank: this.state.creating === 'blank',
+      toggleAi: () => this.setState({ creating: this.state.creating === 'ai' ? null : 'ai', editing: null }),
+      toggleBlank: () => this.setState({ creating: this.state.creating === 'blank' ? null : 'blank', editing: null }),
+      gen: this.state.gen, genBusy: this.state.genBusy, genDisabled: this.state.genBusy || !this.state.gen.name.trim(), genLabel: this.state.genBusy ? 'Generating…' : '✦ Generate draft',
+      onGen: e => this.setState({ gen: { ...this.state.gen, [e.target.name]: e.target.value } }),
+      generate: () => {
+        const { name, notes } = this.state.gen; if (!name.trim()) return;
+        this.setState({ genBusy: true });
+        setTimeout(() => {
+          let slug = this.slugify(name); let i = 2; while (existing.includes(slug)) slug = this.slugify(name) + '-' + i++;
+          const v = { slug, label: name.trim(), audience: name.trim().toLowerCase(), published: false, generatedBy: this.state.gen.provider, ...this.draftFor(name.trim(), name.trim().toLowerCase(), notes.trim()) };
+          this.setState({ cfg: { ...this.state.cfg, customVariants: [...this.state.cfg.customVariants, v] }, dirty: true, genBusy: false, creating: null, editing: slug, gen: { ...this.state.gen, name: '', notes: '' } });
+        }, 1400);
+      },
+      blank: this.state.blank, blankSlug, blankTaken, blankDisabled: !this.state.blank.label.trim() || !this.state.blank.audience.trim() || blankSlug === '…' || blankTaken,
+      onBlank: e => this.setState({ blank: { ...this.state.blank, [e.target.name]: e.target.value } }),
+      createBlank: () => {
+        const b = this.state.blank; const base = Component.BUILTIN[0];
+        const v = { slug: blankSlug, label: b.label.trim(), audience: b.audience.trim(), published: false, eyebrow: 'Multi-channel engagement for ' + b.audience.trim(), h1a: 'Fill your pipeline.', h1b: 'Every channel, one engine.', sub: 'Premium Leads finds verified decision-makers, engages them across LinkedIn, email, phone and video, and books the meeting — automatically.', capHeading: 'Everything ' + b.audience.trim() + ' need — in one platform.', ctaHeading: 'Ready to see your pipeline fill itself?' };
+        this.setState({ cfg: { ...this.state.cfg, customVariants: [...this.state.cfg.customVariants, v] }, dirty: true, creating: null, editing: blankSlug, blank: { label: '', audience: '', slug: '' } });
+      },
+      editing: !!edRaw, ed, edGroups,
+      isForm: tab === 'form', isLeads: tab === 'leads', isResources: tab === 'resources',
+      ctaPrequal: (cfg.ctaMode || 'prequalify') === 'prequalify', setPrequal: () => this.patch({ ctaMode: 'prequalify' }), setBookCall: () => this.patch({ ctaMode: 'book-call' }),
+      prequalBg: (cfg.ctaMode || 'prequalify') === 'prequalify' ? '#0C2E63' : '#fff', prequalFg: (cfg.ctaMode || 'prequalify') === 'prequalify' ? '#fff' : '#33465F',
+      bookBg: cfg.ctaMode === 'book-call' ? '#0C2E63' : '#fff', bookFg: cfg.ctaMode === 'book-call' ? '#fff' : '#33465F',
+      formSections: Component.content ? Component.content.PREQUAL_FORM.sections.map(s => ({ ...s, questions: s.questions.map(q => ({ ...q, typeLabel: q.type, lock: q.lockedValues ? 'Values locked (BVI)' : (q.system ? 'System' : ''), lockBg: q.lockedValues ? 'rgba(217,119,6,.15)' : 'rgba(30,136,229,.12)', lockFg: q.lockedValues ? '#B45309' : '#0C2E63', optCount: q.options.length ? q.options.length + ' options' : '' })) })) : [],
+      doorSections: Component.content ? Object.entries(Component.content.DOOR_SECTIONS).map(([slug, s]) => ({ slug, name: (Component.BUILTIN.find(b => b.slug === slug) || {}).label || slug, qs: s.questions.map(q => q.label).join(' · ') })) : [],
+      leads: this.state.leads.map(l => { const an = l.answers || {}; const open = this.state.openLead === l.id; const statusMap = { qualified: ['Pre-qualified', 'rgba(34,197,94,.15)', '#15803D'], nurture: ['Not ready yet', 'rgba(217,119,6,.15)', '#B45309'], call_booked: ['Call booked', 'rgba(30,136,229,.12)', '#0C2E63'] }; const st = statusMap[l.status] || ['Lead', 'rgba(11,35,71,.08)', '#33465F'];
+        return { ...l, open, name: an.fullName, email: an.email, company: an.company, clientType: an.clientType, budget: an.marketingBudget, readiness: an.readiness, pref: an.servicePreference, door: (Component.BUILTIN.find(b => b.slug === l.variantSlug) || { label: l.variantSlug }).label, when: new Date(l.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }), statusLabel: st[0], statusBg: st[1], statusFg: st[2], bvi: (l.sync && l.sync.bviIntervieweeId) || '—',
+          detail: Object.entries(an).filter(([k, val]) => val && String(val).length).map(([k, val]) => ({ k, v: Array.isArray(val) ? val.join(' · ') : String(val) })),
+          toggle: () => this.setState({ openLead: open ? null : l.id }) }; }),
+      noLeads: this.state.leads.length === 0, newUrl: this.state.newUrl, fetching: this.state.fetching, fetchLabel: this.state.fetching ? 'Fetching…' : 'Fetch & add',
+      onNewUrl: e => this.setState({ newUrl: e.target.value }),
+      fetchResource: () => {
+        let url = this.state.newUrl.trim(); if (!url) return; if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+        this.setState({ fetching: true });
+        setTimeout(() => {
+          let host = url; try { host = new URL(url).hostname.replace(/^www\./, ''); } catch (e) {}
+          const name = host.split('.')[0].replace(/[-_]/g, ' ').replace(/\b\w/g, ch => ch.toUpperCase());
+          const r = { id: host.replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '-' + Date.now().toString(36), name, url, category: 'Partner app', tagline: 'Pulled from ' + host + ' — edit this tagline.', description: 'Page title and meta description from ' + host + ' land here once fetched. Describe what the application does and how it supports a Premium Leads client.', highlights: [], snapshot: Component.content ? Component.content.snapshotFor(url) : '', featured: resources.length < 3 };
+          this.patch({ resources: [...resources, r] }); this.setState({ fetching: false, newUrl: '' });
+        }, 1200);
+      },
+      resources: resources.map((r, i) => { const upd = p => this.patch({ resources: resources.map((x, j) => j === i ? { ...x, ...p } : x) }); return {
+        ...r, snapNote: r.url ? '' : 'Add the URL to snapshot the page', snapshot: r.url ? (r.snapshot || (Component.content ? Component.content.snapshotFor(r.url) : '')) : '', highlightsText: (r.highlights || []).join('\n'),
+        onField: e => { const { name, value } = e.target; upd(name === 'highlights' ? { highlights: value.split('\n').map(s => s.trim()).filter(Boolean) } : { [name]: value }); },
+        refetch: () => upd({ snapshot: (Component.content ? Component.content.snapshotFor(r.url) : '') + '?t=' + Date.now() }),
+        ...this.sw(r.featured !== false), toggleFeatured: () => upd({ featured: r.featured === false }),
+        up: () => { if (i === 0) return; const arr = [...resources]; [arr[i-1], arr[i]] = [arr[i], arr[i-1]]; this.patch({ resources: arr }); },
+        down: () => { if (i === resources.length - 1) return; const arr = [...resources]; [arr[i+1], arr[i]] = [arr[i], arr[i+1]]; this.patch({ resources: arr }); },
+        remove: () => this.patch({ resources: resources.filter((x, j) => j !== i) }),
+        hideImg: e => { e.target.style.display = 'none'; }
+      }; }),
+      onEd: e => { const { name, value } = e.target; if (name === 'slug') { const s = this.slugify(value); if (!s || existing.includes(s)) return; this.patch({ customVariants: cfg.customVariants.map(v => v.slug === edRaw.slug ? { ...v, slug: s } : v) }); this.setState({ editing: s }); return; } this.updatePage(edRaw.slug, { [name]: value }); },
+      togglePublishedEd: () => this.updatePage(edRaw.slug, { published: !edRaw.published }),
+      deleteEd: () => this.setState({ cfg: { ...cfg, customVariants: cfg.customVariants.filter(v => v.slug !== edRaw.slug), defaultVariant: cfg.defaultVariant === edRaw.slug ? 'sales' : cfg.defaultVariant }, dirty: true, editing: null }),
+      closeEditor: () => this.setState({ editing: null }),
+      caps: Component.CAPS.map(c => { const on = cfg.capabilities[c.key] !== false; return { ...c, ...this.sw(on), toggle: () => this.patch({ capabilities: { ...cfg.capabilities, [c.key]: !on } }) }; }),
+      sections: Component.SECTIONS.map(s => { const on = s.defaultOff ? cfg.sections[s.key] === true : cfg.sections[s.key] !== false; return { ...s, ...this.sw(on), toggle: () => this.patch({ sections: { ...cfg.sections, [s.key]: !on } }) }; }),
+      pricingOn: !!cfg.sections.pricing, pricingTrack: this.sw(!!cfg.sections.pricing).trackBg, pricingJustify: this.sw(!!cfg.sections.pricing).justify,
+      togglePricing: () => this.patch({ sections: { ...cfg.sections, pricing: !cfg.sections.pricing } }),
+      tiers: cfg.tiers.map((t, i) => { const upd = p => this.patch({ tiers: cfg.tiers.map((x, j) => j === i ? { ...x, ...p } : x) }); return { ...t, onName: e => upd({ name: e.target.value }), onPrice: e => upd({ price: e.target.value }), onFeatures: e => upd({ features: e.target.value }) }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

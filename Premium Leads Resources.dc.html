@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Resources — Premium Leads</title>
+<link rel="icon" href="assets/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F9FD;color:#0B2347;font-family:Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#1E88E5;text-decoration:none}a:hover{color:#0C2E63}
+</style>
+</helmet>
+
+<header style="position:sticky;top:0;z-index:50;background:rgba(246,249,253,.86);backdrop-filter:blur(12px);border-bottom:1px solid rgba(11,35,71,.08)">
+  <div style="max-width:1200px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+    <a href="Premium Leads.dc.html" style="display:flex;align-items:center"><img src="assets/logo-wordmark.png" alt="Premium Leads" style="height:34px;width:auto;display:block"></a>
+    <nav style="display:flex;align-items:center;gap:22px;font-size:14.5px;font-weight:600;white-space:nowrap;order:3;flex:1 1 100%;justify-content:center;margin-top:8px">
+      <a href="Premium Leads.dc.html#capabilities" style="color:#33465F" style-hover="color:#1E88E5">Capabilities</a>
+      <a href="Premium Leads.dc.html#how" style="color:#33465F" style-hover="color:#1E88E5">The plan</a>
+      <a href="Premium Leads.dc.html#usecases" style="color:#33465F" style-hover="color:#1E88E5">Use cases</a>
+      <a href="Premium Leads Resources.dc.html" style="color:#1E88E5">Resources</a>
+      <a href="Premium Leads.dc.html#faq" style="color:#33465F" style-hover="color:#1E88E5">FAQ</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;flex:none">
+      <a href="https://app.premiumleads.ai/auth/sign-in" style="color:#0B2347;font-weight:600;font-size:14.5px;padding:10px 16px;border-radius:8px;white-space:nowrap" style-hover="background:rgba(11,35,71,.06);color:#0B2347">Log in</a>
+      <a href="{{ bookingUrl }}" target="_blank" rel="noopener" style="background:#0C2E63;color:#fff;font-weight:600;font-size:14.5px;padding:11px 18px;border-radius:8px;transition:background .2s;white-space:nowrap" style-hover="background:#1E88E5;color:#fff">Book a call</a>
+    </div>
+  </div>
+</header>
+
+<section data-screen-label="Resources hero" style="padding:80px 28px 56px;background:radial-gradient(800px 400px at 90% 0%, rgba(0,178,239,.16), transparent 60%)">
+  <div style="max-width:1200px;margin:0 auto;max-width:800px">
+    <div style="font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1E88E5;margin-bottom:18px">Resources</div>
+    <h1 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(34px,4.6vw,56px);line-height:1.06;letter-spacing:-.025em;margin:0 0 18px">The tools we use alongside Premium Leads.</h1>
+    <p style="font-size:18px;line-height:1.6;color:#4A5B74;margin:0;max-width:40em;text-wrap:pretty">Outreach works best when the prospect finds a credible expert on the other end. These are the complementary applications we use to support clients — voice, authority content and nurture — so every touch Premium Leads makes lands on solid ground.</p>
+  </div>
+</section>
+
+<section data-screen-label="Resource list" style="padding:0 28px 104px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;gap:24px">
+    <sc-for list="{{ resources }}" as="r" hint-placeholder-count="3">
+      <article style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));direction:{{ r.dir }};background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:20px;overflow:hidden;box-shadow:0 24px 48px -40px rgba(12,46,99,.4)">
+        <a href="{{ r.href }}" target="_blank" rel="noopener" style="direction:ltr;display:flex;align-items:center;justify-content:center;position:relative;min-height:280px;background:linear-gradient(135deg,#0C2E63,#1E88E5);overflow:hidden">
+          <span style="font-family:Sora,sans-serif;font-weight:700;font-size:56px;color:rgba(255,255,255,.9);letter-spacing:-.03em">{{ r.initials }}</span>
+          <sc-if value="{{ r.hasUrl }}" hint-placeholder-val="{{ false }}">
+            <img src="{{ r.snapshot }}" alt="Snapshot of {{ r.name }}" loading="lazy" onError="{{ r.hideImg }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top">
+            <span style="position:absolute;left:16px;bottom:14px;background:rgba(13,27,46,.85);color:#fff;font-size:12px;font-weight:700;padding:6px 10px;border-radius:7px">{{ r.host }}</span>
+          </sc-if>
+        </a>
+        <div style="direction:ltr;padding:34px 36px;display:flex;flex-direction:column;gap:14px">
+          <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1E88E5">{{ r.category }}</span>
+          <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:28px;letter-spacing:-.02em;margin:0;line-height:1.1">{{ r.name }}</h2>
+          <p style="font-size:17px;font-weight:600;color:#0B2347;margin:0;line-height:1.45">{{ r.tagline }}</p>
+          <p style="font-size:15.5px;line-height:1.6;color:#4A5B74;margin:0">{{ r.description }}</p>
+          <ul style="list-style:none;margin:4px 0 0;padding:0;display:grid;gap:8px">
+            <sc-for list="{{ r.highlights }}" as="hl" hint-placeholder-count="3"><li style="display:flex;gap:10px;font-size:14.5px;color:#33465F"><span style="color:#1E88E5;font-weight:700">—</span>{{ hl }}</li></sc-for>
+          </ul>
+          <sc-if value="{{ r.hasUrl }}" hint-placeholder-val="{{ false }}"><div style="margin-top:auto;padding-top:10px"><a href="{{ r.url }}" target="_blank" rel="noopener" style="display:inline-block;background:#0C2E63;color:#fff;font-weight:700;font-size:14.5px;padding:12px 20px;border-radius:9px;transition:background .2s" style-hover="background:#1E88E5;color:#fff">Visit {{ r.name }} ↗</a></div></sc-if>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+</section>
+
+<section data-screen-label="Resources CTA" style="background:#0C2E63;background-image:radial-gradient(700px 400px at 100% 0%, rgba(0,178,239,.3), transparent 60%);color:#fff;padding:88px 28px;text-align:center">
+  <div style="max-width:720px;margin:0 auto">
+    <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(28px,4vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 16px;color:#fff">Want the whole system working for you?</h2>
+    <p style="font-size:17px;line-height:1.6;color:rgba(255,255,255,.76);margin:0 0 28px">Book a call and we'll show you how Premium Leads and these tools fit together for your audience.</p>
+    <a href="{{ bookingUrl }}" target="_blank" rel="noopener" style="display:inline-block;background:#00B2EF;color:#0D1B2E;font-weight:700;font-size:16px;padding:16px 30px;border-radius:10px;transition:transform .2s" style-hover="transform:translateY(-2px);color:#0D1B2E">Book a call →</a>
+  </div>
+</section>
+
+<footer style="background:#0D1B2E;color:rgba(230,238,248,.6);padding:44px 28px;border-top:1px solid rgba(230,238,248,.1)">
+  <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap">
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px">
+      <img src="assets/logo-wordmark-white.png" alt="Premium Leads" style="height:36px;width:auto;max-width:none;display:block;object-fit:contain;flex:none">
+      <span style="font-size:13px">Scalable, multi-channel engagement driven by real data.</span>
+    </div>
+    <div style="display:flex;gap:22px;font-size:13.5px;font-weight:600;flex-wrap:wrap">
+      <a href="https://app.premiumleads.ai/auth/sign-in" style="color:rgba(230,238,248,.8)" style-hover="color:#00B2EF">Log in</a>
+      <a href="Premium Leads.dc.html#contact" style="color:rgba(230,238,248,.8)" style-hover="color:#00B2EF">Contact us</a>
+      <a href="#" style="color:rgba(230,238,248,.8)" style-hover="color:#00B2EF">Terms of service</a>
+      <a href="#" style="color:rgba(230,238,248,.8)" style-hover="color:#00B2EF">Privacy policy</a>
+    </div>
+    <div style="font-size:12.5px;max-width:34ch;line-height:1.5">© 2026 Premium Leads. All rights reserved.<br>Premium Leads is a <a href="https://findabusinesspro.com" target="_blank" rel="noopener" style="color:rgba(230,238,248,.85);font-weight:600" style-hover="color:#00B2EF">Find a Business Pro!</a> application.</div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { cfg: null, content: null };
+  componentDidMount() {
+    import('./content.js').then(m => this.setState({ content: m }));
+    try { this.setState({ cfg: JSON.parse(localStorage.getItem('pl-site-config') || 'null') }); } catch (e) {}
+    this._on = e => { if (e.key === 'pl-site-config') { try { this.setState({ cfg: JSON.parse(e.newValue || 'null') }); } catch (x) {} } };
+    window.addEventListener('storage', this._on);
+  }
+  componentWillUnmount() { window.removeEventListener('storage', this._on); }
+  renderVals() {
+    const cfg = this.state.cfg || {}; const m = this.state.content;
+    const list = cfg.resources && cfg.resources.length ? cfg.resources : (m ? m.DEFAULT_RESOURCES : []);
+    return {
+      bookingUrl: cfg.bookingUrl || 'https://smart-scheduler.ai/fabp/booking/premiumleads-discovery',
+      resources: list.map((r, i) => { let host = r.url; try { host = new URL(r.url).hostname.replace(/^www\./, ''); } catch (e) {} const initials = (r.name || '').split(/\s+/).map(w => w[0]).join('').slice(0, 3).toUpperCase(); return { ...r, host, initials, dir: i % 2 ? 'rtl' : 'ltr', hasUrl: !!r.url, href: r.url || '#', highlights: r.highlights || [], snapshot: r.snapshot || (m ? m.snapshotFor(r.url) : ''), hideImg: e => { e.target.style.display = 'none'; } }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

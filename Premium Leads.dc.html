@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Premium Leads — Multi-channel engagement platform</title>
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#F6F9FD;color:#0B2347;font-family:Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#1E88E5;text-decoration:none}a:hover{color:#0C2E63}
+section{scroll-margin-top:84px}
+details summary::-webkit-details-marker{display:none}
+details[open] [data-plus]{transform:rotate(45deg)}
+input,textarea{font-family:inherit}
+input:focus,textarea:focus{outline:2px solid #1E88E5;outline-offset:1px;border-color:#1E88E5 !important}
+::selection{background:rgba(30,136,229,.22)}
+@keyframes pl-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+</style>
+</helmet>
+
+<header style="position:sticky;top:0;z-index:50;background:rgba(246,249,253,.86);backdrop-filter:blur(12px);border-bottom:1px solid rgba(11,35,71,.08)">
+  <div style="max-width:1200px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+    <a href="#top" style="display:flex;align-items:center"><img src="assets/logo-wordmark.png" alt="Premium Leads" style="height:34px;width:auto;display:block"></a>
+    <nav style="display:flex;align-items:center;gap:22px;font-size:14.5px;font-weight:600;white-space:nowrap;order:3;flex:1 1 100%;justify-content:center;margin-top:8px">
+      <a href="#capabilities" style="color:#33465F" style-hover="color:#1E88E5">Capabilities</a>
+      <a href="#how" style="color:#33465F" style-hover="color:#1E88E5">The plan</a>
+      <a href="#usecases" style="color:#33465F" style-hover="color:#1E88E5">Use cases</a>
+      <a href="#resources" style="color:#33465F" style-hover="color:#1E88E5">Resources</a>
+      <a href="#faq" style="color:#33465F" style-hover="color:#1E88E5">FAQ</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:10px;flex:none">
+      <a href="https://app.premiumleads.ai/auth/sign-in" style="color:#0B2347;font-weight:600;font-size:14.5px;padding:10px 16px;border-radius:8px;white-space:nowrap" style-hover="background:rgba(11,35,71,.06);color:#0B2347">Log in</a>
+      <a href="{{ ctaHref }}" target="{{ ctaTarget }}" rel="noopener" onClick="{{ trackCta }}" style="background:#0C2E63;color:#fff;font-weight:600;font-size:14.5px;padding:11px 18px;border-radius:8px;transition:background .2s;white-space:nowrap" style-hover="background:#1E88E5;color:#fff">{{ ctaLabelShort }}</a>
+    </div>
+  </div>
+</header>
+
+<section id="top" data-screen-label="Hero" style="position:relative;overflow:hidden;padding:88px 28px 96px;background:radial-gradient(900px 480px at 85% 0%, rgba(0,178,239,.16), transparent 60%), radial-gradient(700px 400px at 0% 100%, rgba(30,136,229,.12), transparent 60%)">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:56px;align-items:center">
+    <div>
+      <div style="font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1E88E5;margin-bottom:22px">{{ v.eyebrow }}</div>
+      <h1 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(38px,5vw,64px);line-height:1.04;letter-spacing:-.025em;margin:0 0 22px;color:#0B2347">{{ v.h1a }}<br><span style="background:linear-gradient(90deg,#1E88E5,#00B2EF);-webkit-background-clip:text;background-clip:text;color:transparent">{{ v.h1b }}</span></h1>
+      <p style="font-size:18.5px;line-height:1.6;color:#4A5B74;margin:0 0 32px;max-width:34em;text-wrap:pretty">{{ v.sub }}</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+        <a href="{{ ctaHref }}" target="{{ ctaTarget }}" rel="noopener" onClick="{{ trackCta }}" style="background:linear-gradient(135deg,#1E88E5,#0C2E63);color:#fff;font-weight:700;font-size:16px;padding:16px 26px;border-radius:10px;box-shadow:0 14px 30px -12px rgba(30,136,229,.6);transition:transform .2s" style-hover="transform:translateY(-2px);color:#fff">{{ ctaLabel }}</a>
+        <a href="#how" style="color:#0B2347;font-weight:600;font-size:16px;padding:16px 10px;border-bottom:2px solid rgba(11,35,71,.2)" style-hover="border-color:#1E88E5;color:#0B2347">{{ v.ctaTransitional }}</a>
+      </div>
+      <div style="display:flex;gap:28px;margin-top:40px;flex-wrap:wrap">
+        <sc-for list="{{ v.stats }}" as="s" hint-placeholder-count="3">
+          <div><div style="font-family:Sora,sans-serif;font-weight:700;font-size:26px;color:#0C2E63;letter-spacing:-.02em">{{ s.v }}</div><div style="font-size:13px;color:#6B7A90;font-weight:600">{{ s.l }}</div></div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="position:relative">
+      <div style="position:relative;border-radius:18px;background:#0D1B2E;padding:10px;box-shadow:0 40px 80px -30px rgba(12,46,99,.45)">
+        <div style="position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#06101E">
+          <iframe src="{{ vimeoSrc }}" title="Premium Leads overview" style="position:absolute;inset:0;width:100%;height:100%;border:0" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen="{{ true }}"></iframe>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 8px 4px;color:rgba(255,255,255,.7);font-size:12.5px;font-weight:600">
+          <span style="display:flex;align-items:center;gap:8px"><img src="assets/logo-icon.png" alt="" style="width:18px;height:18px;border-radius:4px"> Platform overview</span>
+          <span style="color:#00B2EF">2 min</span>
+        </div>
+      </div>
+      <div style="position:absolute;top:-22px;right:-14px;background:#fff;border:1px solid rgba(11,35,71,.1);border-radius:12px;padding:12px 16px;box-shadow:0 18px 36px -18px rgba(11,35,71,.35);animation:pl-float 6s ease-in-out infinite">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6B7A90">Channels live</div>
+        <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">
+          <sc-for list="{{ v.channels }}" as="ch" hint-placeholder-count="4"><span style="font-size:12px;font-weight:700;color:#0C2E63;background:rgba(30,136,229,.1);padding:4px 8px;border-radius:6px">{{ ch }}</span></sc-for>
+        </div>
+      </div>
+      <div style="position:absolute;bottom:-20px;left:-16px;background:#fff;border:1px solid rgba(11,35,71,.1);border-radius:12px;padding:12px 16px;box-shadow:0 18px 36px -18px rgba(11,35,71,.35);display:flex;align-items:center;gap:10px;animation:pl-float 7s ease-in-out 1s infinite">
+        <span style="width:9px;height:9px;border-radius:50%;background:#22C55E;box-shadow:0 0 0 4px rgba(34,197,94,.18)"></span>
+        <span style="font-size:13.5px;font-weight:700;color:#0B2347">{{ v.chip }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<sc-if value="{{ sec.trustStrip }}" hint-placeholder-val="{{ true }}">
+<div style="border-top:1px solid rgba(11,35,71,.08);border-bottom:1px solid rgba(11,35,71,.08);background:#fff">
+  <div style="max-width:1200px;margin:0 auto;padding:20px 28px;display:flex;justify-content:center;gap:16px 36px;flex-wrap:wrap;font-size:13.5px;font-weight:600;color:#4A5B74;letter-spacing:.02em">
+    <sc-for list="{{ v.trust }}" as="t" hint-placeholder-count="4"><span>{{ t }}</span></sc-for>
+  </div>
+</div>
+</sc-if>
+
+
+
+
+
+
+
+<sc-if value="{{ sec.problem }}" hint-placeholder-val="{{ true }}">
+<section id="problem" data-screen-label="Problem" style="padding:104px 28px 0">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="max-width:760px;margin-bottom:44px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1E88E5;margin-bottom:14px">{{ v.problemEyebrow }}</div>
+      <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0 0 16px;text-wrap:pretty">{{ v.problemHeading }}</h2>
+      <div style="display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#4A5B74"><span style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6B7A90">The villain</span><span style="color:#0B2347">{{ v.villain }}</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1px;background:rgba(11,35,71,.1);border:1px solid rgba(11,35,71,.1);border-radius:16px;overflow:hidden">
+      <sc-for list="{{ v.problems }}" as="p" hint-placeholder-count="3">
+        <div style="background:#fff;padding:32px 30px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1E88E5;margin-bottom:14px">{{ p.kind }}</div>
+          <h3 style="font-family:Sora,sans-serif;font-weight:600;font-size:20px;margin:0 0 10px;color:#0B2347">{{ p.title }}</h3>
+          <p style="font-size:15.5px;line-height:1.6;color:#4A5B74;margin:0">{{ p.body }}</p>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ sec.engine }}" hint-placeholder-val="{{ true }}">
+<section id="engine" data-screen-label="Multi-channel engine" style="padding:104px 28px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:56px;align-items:center">
+    <div style="display:flex;justify-content:center">
+      <div style="position:relative;width:min(100%,420px);aspect-ratio:1;background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 30px 60px -36px rgba(12,46,99,.4)">
+        <img src="assets/logo-icon.png" alt="Email, chat, phone and messaging channels orbiting one engine" style="width:78%;height:auto;display:block">
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1E88E5;margin-bottom:14px">{{ v.engineEyebrow }}</div>
+      <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0 0 20px;text-wrap:pretty">{{ v.engineHeading }}</h2>
+      <p style="font-size:17px;line-height:1.62;color:#4A5B74;margin:0 0 28px;max-width:40ch">{{ v.engineBody }}</p>
+      <div style="display:grid;gap:12px">
+        <sc-for list="{{ v.enginePoints }}" as="p" hint-placeholder-count="3">
+          <div style="display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:12px;padding:16px 18px">
+            <span style="flex:none;width:26px;height:26px;border-radius:50%;background:rgba(30,136,229,.12);color:#1E88E5;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">✓</span>
+            <div><div style="font-weight:700;font-size:15.5px;color:#0B2347">{{ p.t }}</div><div style="font-size:14.5px;color:#4A5B74;line-height:1.5;margin-top:2px">{{ p.b }}</div></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ sec.how }}" hint-placeholder-val="{{ true }}">
+<section id="how" data-screen-label="How it works" style="background:#0D1B2E;color:#E6EEF8;padding:108px 28px">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="text-align:center;max-width:760px;margin:0 auto 56px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#00B2EF;margin-bottom:14px">The plan</div>
+      <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(30px,4.2vw,52px);line-height:1.08;letter-spacing:-.02em;margin:0 0 18px;color:#fff">{{ v.howH1 }}<br><span style="color:#00B2EF">{{ v.howH2 }}</span></h2>
+      <p style="font-size:17.5px;line-height:1.6;color:rgba(230,238,248,.74);margin:0">{{ v.howSub }}</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1px;background:rgba(230,238,248,.14);border:1px solid rgba(230,238,248,.14);border-radius:16px;overflow:hidden">
+      <sc-for list="{{ v.steps }}" as="st" hint-placeholder-count="4">
+        <div style="background:#0D1B2E;padding:34px 28px">
+          <div style="font-family:Sora,sans-serif;font-weight:700;font-size:34px;color:#00B2EF;letter-spacing:-.02em;margin-bottom:14px">{{ st.n }}</div>
+          <h3 style="font-family:Sora,sans-serif;font-weight:600;font-size:20px;margin:0 0 10px;color:#fff">{{ st.title }}</h3>
+          <p style="font-size:15px;line-height:1.55;color:rgba(230,238,248,.72);margin:0">{{ st.body }}</p>
+        </div>
+      </sc-for>
+    </div>
+    <div style="text-align:center;margin-top:48px">
+      <a href="{{ ctaHref }}" target="{{ ctaTarget }}" rel="noopener" onClick="{{ trackCta }}" style="display:inline-block;background:#00B2EF;color:#0D1B2E;font-weight:700;font-size:16px;padding:16px 30px;border-radius:10px;transition:transform .2s" style-hover="transform:translateY(-2px);color:#0D1B2E">{{ ctaLabel }}</a>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<section id="capabilities" data-screen-label="Capabilities" style="padding:104px 28px 72px">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-bottom:48px">
+      <div style="max-width:620px">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1E88E5;margin-bottom:14px">What you get</div>
+        <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0;text-wrap:pretty">{{ v.capHeading }}</h2>
+      </div>
+      <p style="font-size:16px;line-height:1.6;color:#4A5B74;max-width:34ch;margin:0">{{ v.capBlurb }}</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px">
+      <sc-for list="{{ capabilities }}" as="c" hint-placeholder-count="6">
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:14px;transition:transform .2s, box-shadow .2s" style-hover="transform:translateY(-3px);box-shadow:0 24px 40px -28px rgba(12,46,99,.4)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="width:42px;height:42px;border-radius:11px;background:{{ c.bg }};display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:700;font-size:15px;color:#fff">{{ c.glyph }}</div>
+            <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6B7A90">{{ c.group }}</span>
+          </div>
+          <h3 style="font-family:Sora,sans-serif;font-weight:600;font-size:19px;margin:0;color:#0B2347">{{ c.title }}</h3>
+          <p style="font-size:15px;line-height:1.55;color:#4A5B74;margin:0">{{ c.body }}</p>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<sc-if value="{{ sec.transformation }}" hint-placeholder-val="{{ true }}">
+<section id="transformation" data-screen-label="Stakes and success" style="padding:0 28px 104px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:20px">
+    <div style="background:#fff;border:1px solid rgba(11,35,71,.1);border-radius:18px;padding:36px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#6B7A90;margin-bottom:12px">The stakes</div>
+      <h3 style="font-family:Sora,sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;margin:0 0 22px;color:#0B2347">{{ v.stakesHeading }}</h3>
+      <ul style="list-style:none;margin:0;padding:0;display:grid;gap:12px">
+        <sc-for list="{{ v.stakes }}" as="s" hint-placeholder-count="4"><li style="display:flex;gap:12px;font-size:15.5px;line-height:1.5;color:#4A5B74"><span style="flex:none;color:#B02A2A;font-weight:700">✕</span>{{ s }}</li></sc-for>
+      </ul>
+    </div>
+    <div style="background:#0C2E63;background-image:radial-gradient(500px 300px at 100% 0%, rgba(0,178,239,.35), transparent 60%);color:#fff;border-radius:18px;padding:36px;box-shadow:0 30px 60px -36px rgba(12,46,99,.6)">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#00B2EF;margin-bottom:12px">The success</div>
+      <h3 style="font-family:Sora,sans-serif;font-weight:700;font-size:24px;letter-spacing:-.02em;margin:0 0 22px;color:#fff">{{ v.successHeading }}</h3>
+      <div style="display:grid;gap:12px">
+        <sc-for list="{{ v.success }}" as="s" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;font-size:14.5px;line-height:1.45;background:rgba(255,255,255,.07);border-radius:10px;padding:12px 14px">
+            <span style="color:rgba(255,255,255,.6);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.35)">{{ s.before }}</span><span style="color:#00B2EF;font-weight:700">→</span><span style="font-weight:600">{{ s.after }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ sec.usecases }}" hint-placeholder-val="{{ true }}">
+<section id="usecases" data-screen-label="Use cases" style="padding:0 28px 104px">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="text-align:center;max-width:720px;margin:0 auto 44px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1E88E5;margin-bottom:14px">Use cases</div>
+      <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0 0 14px">{{ v.ucHeading }}</h2>
+      <p style="font-size:16.5px;line-height:1.6;color:#4A5B74;margin:0">{{ v.ucSub }}</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:14px">
+      <sc-for list="{{ audiences }}" as="a" hint-placeholder-count="5">
+        <button type="button" onClick="{{ a.pick }}" style="text-align:left;cursor:pointer;background:{{ a.bg }};color:{{ a.fg }};border:1px solid {{ a.border }};border-radius:16px;padding:24px 22px;display:flex;flex-direction:column;gap:8px;font-family:inherit;transition:transform .2s" style-hover="transform:translateY(-3px)">
+          <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.7">{{ a.kicker }}</span>
+          <span style="font-family:Sora,sans-serif;font-weight:600;font-size:18px">{{ a.name }}</span>
+          <span style="font-size:14px;line-height:1.5;opacity:.85">{{ a.desc }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:28px;margin-top:40px">
+      <sc-for list="{{ v.useCaseCols }}" as="col" hint-placeholder-count="3">
+        <div>
+          <div style="font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6B7A90;margin-bottom:12px">{{ col.title }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ col.items }}" as="it" hint-placeholder-count="5">
+              <span style="font-size:13.5px;font-weight:600;color:#0C2E63;background:#fff;border:1px solid rgba(11,35,71,.1);padding:7px 12px;border-radius:100px">{{ it }}</span>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ sec.integrations }}" hint-placeholder-val="{{ true }}">
+<section id="integrations" data-screen-label="Integrations" style="padding:0 28px 104px">
+  <div style="max-width:1200px;margin:0 auto;border-top:1px solid rgba(11,35,71,.1);border-bottom:1px solid rgba(11,35,71,.1);padding:40px 0;display:flex;align-items:center;gap:32px;flex-wrap:wrap;justify-content:space-between">
+    <div style="font-size:14px;font-weight:700;color:#6B7A90;letter-spacing:.04em">Connects with the tools you already use</div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <sc-for list="{{ v.integrations }}" as="i" hint-placeholder-count="8">
+        <span style="font-family:Sora,sans-serif;font-weight:600;font-size:15px;color:#0B2347;background:#fff;border:1px solid rgba(11,35,71,.08);padding:10px 16px;border-radius:10px">{{ i }}</span>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ sec.testimonials }}" hint-placeholder-val="{{ true }}">
+<section id="proof" data-screen-label="Testimonials" style="padding:0 28px 104px">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:40px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1E88E5;margin-bottom:14px">Results</div>
+      <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0">{{ v.proofHeading }}</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:20px">
+      <sc-for list="{{ v.quotes }}" as="q" hint-placeholder-count="2">
+        <figure style="margin:0;background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:18px;padding:36px;display:flex;flex-direction:column;gap:22px;box-shadow:0 24px 48px -36px rgba(12,46,99,.4)">
+          <div style="font-family:Sora,sans-serif;font-size:44px;line-height:.6;color:#00B2EF;font-weight:700">“</div>
+          <blockquote style="margin:0;font-size:19px;line-height:1.55;color:#0B2347;font-weight:500;text-wrap:pretty">{{ q.text }}</blockquote>
+          <sc-if value="{{ showAttribution }}" hint-placeholder-val="{{ false }}">
+          <figcaption style="display:flex;align-items:center;gap:12px;margin-top:auto">
+            <span style="width:40px;height:40px;border-radius:50%;background:#0C2E63;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">{{ q.initials }}</span>
+            <span><span style="display:block;font-weight:700;font-size:14.5px">{{ q.name }}</span><span style="display:block;font-size:13px;color:#6B7A90">{{ q.role }}</span></span>
+          </figcaption>
+          </sc-if>
+          <sc-if value="{{ hideAttribution }}" hint-placeholder-val="{{ true }}"><figcaption style="margin-top:auto;font-size:13px;color:#6B7A90;font-weight:600">Premium Leads client</figcaption></sc-if>
+        </figure>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ sec.pricing }}" hint-placeholder-val="{{ false }}">
+<section id="pricing" data-screen-label="Pricing" style="padding:0 28px 104px">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:40px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1E88E5;margin-bottom:14px">Pricing</div>
+      <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0">Plans that scale with your pipeline.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:20px">
+      <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="3">
+        <div style="background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:18px;padding:32px;display:flex;flex-direction:column;gap:14px">
+          <h3 style="font-family:Sora,sans-serif;font-weight:700;font-size:24px;margin:0">{{ t.name }}</h3>
+          <div style="font-weight:700;color:#1E88E5;font-size:15px">{{ t.price }}</div>
+          <ul style="list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:15px;color:#33465F">
+            <sc-for list="{{ t.featureList }}" as="f" hint-placeholder-count="3"><li style="display:flex;gap:10px"><span style="color:#1E88E5;font-weight:700">—</span>{{ f }}</li></sc-for>
+          </ul>
+          <a href="{{ ctaHref }}" target="{{ ctaTarget }}" rel="noopener" style="margin-top:auto;text-align:center;background:#0C2E63;color:#fff;font-weight:700;padding:13px;border-radius:10px" style-hover="background:#1E88E5;color:#fff">{{ ctaLabelShort }}</a>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</sc-if>
+<sc-if value="{{ sec.resources }}" hint-placeholder-val="{{ true }}">
+<section id="resources" data-screen-label="Resources" style="padding:0 28px 104px">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:36px">
+      <div style="max-width:640px">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1E88E5;margin-bottom:14px">Resources</div>
+        <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0;text-wrap:pretty">Tools we use alongside Premium Leads.</h2>
+      </div>
+      <a href="Premium Leads Resources.dc.html" style="color:#0B2347;font-weight:700;font-size:15px;padding:12px 0;border-bottom:2px solid rgba(11,35,71,.2)" style-hover="border-color:#1E88E5;color:#0B2347">All resources →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
+      <sc-for list="{{ resources }}" as="r" hint-placeholder-count="3">
+        <a href="Premium Leads Resources.dc.html" style="display:flex;flex-direction:column;background:#fff;border:1px solid rgba(11,35,71,.08);border-radius:16px;overflow:hidden;color:#0B2347;transition:transform .2s, box-shadow .2s" style-hover="transform:translateY(-3px);box-shadow:0 24px 40px -28px rgba(12,46,99,.4);color:#0B2347">
+          <div style="aspect-ratio:16/10;background:linear-gradient(135deg,#0C2E63,#1E88E5);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
+            <span style="font-family:Sora,sans-serif;font-weight:700;font-size:44px;color:rgba(255,255,255,.9);letter-spacing:-.03em">{{ r.initials }}</span>
+            <sc-if value="{{ r.hasUrl }}" hint-placeholder-val="{{ false }}"><img src="{{ r.snapshot }}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top" onError="{{ r.hideImg }}"></sc-if>
+          </div>
+          <div style="padding:22px 24px 24px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#1E88E5">{{ r.category }}</span>
+            <span style="font-family:Sora,sans-serif;font-weight:600;font-size:19px">{{ r.name }}</span>
+            <span style="font-size:14.5px;line-height:1.55;color:#4A5B74">{{ r.tagline }}</span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{ sec.faq }}" hint-placeholder-val="{{ true }}">
+<section id="faq" data-screen-label="FAQ" style="padding:0 28px 104px">
+  <div style="max-width:880px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:36px">
+      <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#1E88E5;margin-bottom:14px">Questions</div>
+      <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(30px,4vw,48px);line-height:1.08;letter-spacing:-.02em;margin:0">Straight answers.</h2>
+    </div>
+    <div style="border-top:1px solid rgba(11,35,71,.12)">
+      <sc-for list="{{ v.faqs }}" as="f" hint-placeholder-count="5">
+        <details style="border-bottom:1px solid rgba(11,35,71,.12)">
+          <summary style="list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px 4px;font-family:Sora,sans-serif;font-weight:600;font-size:18px;color:#0B2347">{{ f.q }}<span data-plus="" style="flex:none;font-size:26px;line-height:1;color:#1E88E5;transition:transform .25s;font-weight:400">+</span></summary>
+          <p style="margin:0;padding:0 4px 26px;font-size:16px;line-height:1.65;color:#4A5B74;max-width:62ch">{{ f.a }}</p>
+        </details>
+      </sc-for>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<section id="contact" data-screen-label="Contact" style="background:#0C2E63;background-image:radial-gradient(700px 400px at 100% 0%, rgba(0,178,239,.3), transparent 60%);color:#fff;padding:108px 28px">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:56px;align-items:center">
+    <div>
+      <div style="font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#00B2EF;margin-bottom:14px">Get started</div>
+      <h2 style="font-family:Sora,sans-serif;font-weight:700;font-size:clamp(32px,4.4vw,56px);line-height:1.06;letter-spacing:-.02em;margin:0 0 18px;color:#fff">{{ v.ctaHeading }}</h2>
+      <p style="font-size:17.5px;line-height:1.6;color:rgba(255,255,255,.76);margin:0 0 30px;max-width:42ch">{{ v.ctaSub }}</p>
+      <a href="{{ ctaHref }}" target="{{ ctaTarget }}" rel="noopener" onClick="{{ trackCta }}" style="display:inline-block;background:#00B2EF;color:#0D1B2E;font-weight:700;font-size:16px;padding:16px 30px;border-radius:10px;transition:transform .2s" style-hover="transform:translateY(-2px);color:#0D1B2E">{{ ctaLabel }}</a>
+      <div style="font-size:13.5px;color:rgba(255,255,255,.55);margin-top:14px">{{ ctaMicro }}</div>
+    </div>
+    <sc-if value="{{ showIntakeCard }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#fff;color:#0B2347;border-radius:18px;padding:32px;display:grid;gap:16px;box-shadow:0 40px 80px -40px rgba(0,0,0,.5)">
+        <div style="font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1E88E5">How getting started works</div>
+        <sc-for list="{{ intakeSteps }}" as="s" hint-placeholder-count="3">
+          <div style="display:flex;gap:14px;align-items:flex-start"><span style="flex:none;width:28px;height:28px;border-radius:50%;background:#0C2E63;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">{{ s.n }}</span><div><div style="font-weight:700;font-size:15px">{{ s.t }}</div><div style="font-size:14px;color:#4A5B74;line-height:1.5">{{ s.b }}</div></div></div>
+        </sc-for>
+        <a href="{{ ctaHref }}" style="text-align:center;background:#0C2E63;color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:10px;transition:background .2s" style-hover="background:#1E88E5;color:#fff">Get started →</a>
+      </div>
+    </sc-if>
+    <sc-if value="{{ showForm }}" hint-placeholder-val="{{ false }}">
+    <form onSubmit="{{ submitForm }}" style="background:#fff;color:#0B2347;border-radius:18px;padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:14px;box-shadow:0 40px 80px -40px rgba(0,0,0,.5)">
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="grid-column:1/-1;text-align:center;padding:40px 10px">
+          <div style="font-family:Sora,sans-serif;font-weight:700;font-size:24px;margin-bottom:8px">Thanks — we'll be in touch.</div>
+          <div style="color:#4A5B74">Expect a reply within one business day.</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Name<input name="name" required="{{ true }}" value="{{ form.name }}" onChange="{{ onField }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:12px 14px;font-size:15px;color:#0B2347"></label>
+        <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Work email<input name="email" type="email" required="{{ true }}" value="{{ form.email }}" onChange="{{ onField }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:12px 14px;font-size:15px;color:#0B2347"></label>
+        <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Company<input name="company" value="{{ form.company }}" onChange="{{ onField }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:12px 14px;font-size:15px;color:#0B2347"></label>
+        <label style="display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">Phone<input name="phone" type="tel" value="{{ form.phone }}" onChange="{{ onField }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:12px 14px;font-size:15px;color:#0B2347"></label>
+        <label style="grid-column:1/-1;display:grid;gap:6px;font-size:13px;font-weight:700;color:#33465F">How can we help?<textarea name="message" rows="{{ 4 }}" value="{{ form.message }}" onChange="{{ onField }}" style="border:1px solid rgba(11,35,71,.15);border-radius:9px;padding:12px 14px;font-size:15px;color:#0B2347;resize:vertical"></textarea></label>
+        <button type="submit" style="grid-column:1/-1;cursor:pointer;background:#0C2E63;color:#fff;border:0;border-radius:10px;padding:15px;font-weight:700;font-size:15.5px;font-family:inherit;transition:background .2s" style-hover="background:#1E88E5">Send message</button>
+      </sc-if>
+    </form>
+    </sc-if>
+  </div>
+</section>
+
+<footer style="background:#0D1B2E;color:rgba(230,238,248,.6);padding:44px 28px;border-top:1px solid rgba(230,238,248,.1)">
+  <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap">
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:10px">
+      <img src="assets/logo-wordmark-white.png" alt="Premium Leads" style="height:36px;width:auto;max-width:none;display:block;object-fit:contain;flex:none">
+      <span style="font-size:13px">Scalable, multi-channel engagement driven by real data.</span>
+    </div>
+    <div style="display:flex;gap:22px;font-size:13.5px;font-weight:600;flex-wrap:wrap">
+      <a href="https://app.premiumleads.ai/auth/sign-in" style="color:rgba(230,238,248,.8)" style-hover="color:#00B2EF">Log in</a>
+      <a href="#contact" style="color:rgba(230,238,248,.8)" style-hover="color:#00B2EF">Contact us</a>
+      <a href="#" style="color:rgba(230,238,248,.8)" style-hover="color:#00B2EF">Terms of service</a>
+      <a href="#" style="color:rgba(230,238,248,.8)" style-hover="color:#00B2EF">Privacy policy</a>
+    </div>
+    <div style="font-size:12.5px;max-width:34ch;line-height:1.5">© 2026 Premium Leads. All rights reserved.<br>Premium Leads is a <a href="https://findabusinesspro.com" target="_blank" rel="noopener" style="color:rgba(230,238,248,.85);font-weight:600" style-hover="color:#00B2EF">Find a Business Pro!</a> application.</div>
+  </div>
+</footer>
+
+<div style="position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:6px;background:rgba(13,27,46,.92);backdrop-filter:blur(10px);border-radius:100px;padding:6px 8px 6px 14px;box-shadow:0 20px 40px -20px rgba(0,0,0,.6)">
+  <span style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(230,238,248,.55);margin-right:6px">Preview variant</span>
+  <sc-for list="{{ audiences }}" as="a" hint-placeholder-count="5">
+    <button type="button" onClick="{{ a.pick }}" style="cursor:pointer;border:0;border-radius:100px;padding:8px 12px;font-size:12.5px;font-weight:700;font-family:inherit;background:{{ a.pillBg }};color:{{ a.pillFg }}">{{ a.short }}</button>
+  </sc-for>
+  <a href="Premium Leads Admin.dc.html" style="margin-left:6px;border-radius:100px;padding:8px 12px;font-size:12.5px;font-weight:700;background:#00B2EF;color:#0D1B2E" style-hover="color:#0D1B2E;background:#fff">Admin</a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;sales&quot;,&quot;options&quot;:[&quot;sales&quot;,&quot;recruiting&quot;,&quot;agency&quot;,&quot;founders&quot;,&quot;enterprise&quot;],&quot;tsType&quot;:&quot;'sales'|'recruiting'|'agency'|'founders'|'enterprise'&quot;,&quot;section&quot;:&quot;Audience&quot;},&quot;vimeoId&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;756896760&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;bookingUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://smart-scheduler.ai/fabp/booking/premiumleads-discovery&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;CTA&quot;},&quot;showContactForm&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;},&quot;capAiEmployee&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Capabilities&quot;},&quot;capDialer&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Capabilities&quot;},&quot;capVoicemail&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Capabilities&quot;},&quot;capVideo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Capabilities&quot;}}">
+class Component extends DCLogic {
+  state = { variant: null, cfg: null, form: { name: '', email: '', company: '', phone: '', message: '' }, sent: false };
+
+  static VARIANTS = {};
+  static CAPS = [];
+  static content = null;
+
+  componentDidMount() {
+    import('./content.js').then(m => { Component.content = m; Component.VARIANTS = m.VARIANTS; Component.CAPS = m.CAPS; this.forceUpdate(); });
+    this.loadCfg();
+    this._onStorage = e => { if (e.key === 'pl-site-config') this.loadCfg(); };
+    window.addEventListener('storage', this._onStorage);
+    const q = new URLSearchParams(location.search).get('variant');
+    if (q) this.setState({ variant: q });
+  }
+  componentWillUnmount() { window.removeEventListener('storage', this._onStorage); }
+  loadCfg() { try { this.setState({ cfg: JSON.parse(localStorage.getItem('pl-site-config') || 'null') }); } catch (e) {} }
+
+  renderVals() {
+    const cfg = this.state.cfg || {};
+    const customs = (cfg.customVariants || []).filter(c => c.published || this.state.variant === c.slug);
+    const customMap = Object.fromEntries(customs.map(c => [c.slug, c]));
+    const overrides = cfg.overrides || {};
+    const norm = Component.content ? Component.content.normalize : (x => x);
+    const strip = o => norm(Object.fromEntries(Object.entries(o || {}).filter(([k, val]) => val !== '' && val != null && !['slug', 'builtin', 'published', 'dot', 'generatedBy'].includes(k))));
+    if (!Component.content) return { v: {}, capabilities: [], audiences: [], bookingUrl: '#', showForm: false, sec: {}, tiers: [], form: this.state.form, sent: false, notSent: true, vimeoSrc: '' };
+    const allVariants = {};
+    Object.keys(Component.VARIANTS).forEach(k => { allVariants[k] = { ...Component.VARIANTS[k], ...strip(overrides[k]) }; });
+    customs.forEach(c => { allVariants[c.slug] = { ...Component.VARIANTS.sales, short: c.label, name: c.label, kicker: 'Custom', desc: 'Tailored for ' + c.audience + '.', ...strip(c) }; });
+    Object.values(allVariants).forEach(x => { x.steps = (x.steps || []).map((st, i) => ({ ...st, n: String(i + 1).padStart(2, '0') })); });
+    const variantKey = this.state.variant || this.props.variant || cfg.defaultVariant || 'sales';
+    const v = allVariants[variantKey] || allVariants.sales;
+    const caps = cfg.capabilities || {};
+    const propCaps = { aiEmployee: this.props.capAiEmployee, dialer: this.props.capDialer, voicemail: this.props.capVoicemail, video: this.props.capVideo };
+    const order = v.capOrder && v.capOrder.length ? v.capOrder : Component.CAPS.map(c => c.key);
+    const capCopy = v.capCopy || {};
+    const capabilities = order.map(k => Component.CAPS.find(c => c.key === k)).filter(Boolean).filter(c => propCaps[c.key] !== false && caps[c.key] !== false).map(c => ({ ...c, body: capCopy[c.key] || c.body }));
+    const vimeoId = cfg.vimeoId || this.props.vimeoId || '756896760';
+    const bookingUrl = v.bookingUrl || cfg.bookingUrl || this.props.bookingUrl || 'https://smart-scheduler.ai/fabp/booking/premiumleads-discovery';
+    const sections = cfg.sections || {};
+    const ctaMode = cfg.ctaMode || 'prequalify';
+    const ctaHref = ctaMode === 'book-call' ? bookingUrl : 'Premium Leads Get Started.dc.html?variant=' + variantKey;
+    const showForm = sections.contactForm !== false && (this.props.showContactForm ?? true) && ctaMode === 'book-call';
+    const audiences = Object.keys(allVariants).map(k => {
+      const a = allVariants[k]; const active = k === variantKey;
+      return {
+        key: k, short: a.short, name: a.name, kicker: a.kicker, desc: a.desc,
+        pick: () => { this.setState({ variant: k }); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+        bg: active ? '#0C2E63' : '#fff', fg: active ? '#fff' : '#0B2347', border: active ? '#0C2E63' : 'rgba(11,35,71,.1)',
+        pillBg: active ? '#1E88E5' : 'transparent', pillFg: active ? '#fff' : 'rgba(230,238,248,.8)'
+      };
+    });
+    return {
+      v, variantKey, capabilities, audiences, bookingUrl, showForm, ctaHref, ctaTarget: ctaMode === 'book-call' ? '_blank' : '_self',
+      ctaLabel: ctaMode === 'book-call' ? 'Book a call →' : 'Get started →', ctaLabelShort: ctaMode === 'book-call' ? 'Book a call' : 'Get started',
+      ctaMicro: ctaMode === 'book-call' ? v.ctaMicro : '3-minute intake · then pick a time · no obligation',
+      resources: ((cfg.resources && cfg.resources.length ? cfg.resources : Component.content.DEFAULT_RESOURCES)).filter(r => r.featured !== false).slice(0, 3).map(r => ({ ...r, hasUrl: !!r.url, initials: (r.name || '').split(/\s+/).map(w => w[0]).join('').slice(0, 3).toUpperCase(), snapshot: r.snapshot || Component.content.snapshotFor(r.url), hideImg: e => { e.target.style.display = 'none'; } })),
+      showAttribution: sections.testimonialAttribution === true, hideAttribution: sections.testimonialAttribution !== true,
+      sec: { trustStrip: sections.trustStrip !== false, resources: sections.resources !== false, problem: sections.problem !== false, transformation: sections.transformation !== false, how: sections.how !== false, engine: sections.engine !== false, usecases: sections.usecases !== false, integrations: sections.integrations !== false, testimonials: sections.testimonials !== false, faq: sections.faq !== false, pricing: sections.pricing === true },
+      tiers: (cfg.tiers || []).map(t => ({ ...t, featureList: String(t.features || '').split('\n').filter(Boolean) })),
+      vimeoSrc: 'https://player.vimeo.com/video/' + vimeoId + '?title=0&byline=0&portrait=0&dnt=1',
+      trackCta: () => { try { const t = JSON.parse(localStorage.getItem('pl-cta-clicks') || '{}'); t[variantKey] = (t[variantKey] || 0) + 1; localStorage.setItem('pl-cta-clicks', JSON.stringify(t)); } catch (e) {} },
+      showIntakeCard: ctaMode !== 'book-call' && sections.contactForm !== false,
+      intakeSteps: [{ n: '1', t: 'Three minutes of questions', b: 'Who you are, what you sell, your goals, timing and how you like to work.' }, { n: '2', t: 'We route you to the right next step', b: 'Ready now? Pick a time with an advisor. Still exploring? We stay in touch without the hard sell.' }, { n: '3', t: 'Your advisor comes prepared', b: 'Your answers land on their desk — and in our client systems — so nothing is asked twice.' }],
+      form: this.state.form, sent: this.state.sent, notSent: !this.state.sent,
+      onField: e => this.setState({ form: { ...this.state.form, [e.target.name]: e.target.value } }),
+      submitForm: e => { e.preventDefault(); this.setState({ sent: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
