@@ -1,0 +1,1 @@
+- [Imported-project scope](imported-project-scope.md) — preserve the GitHub version as closely as possible when setting up this project.
