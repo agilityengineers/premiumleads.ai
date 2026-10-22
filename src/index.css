@@ -136,8 +136,7 @@ button:disabled { opacity: .5; cursor: not-allowed !important; }
   .pl-before-after { grid-template-columns: minmax(0,1fr) !important; gap: 4px !important; }
   .pl-before-after > .pl-arrow { transform: rotate(90deg); justify-self: start; line-height: 1; }
   .pl-hero-cta { width: 100%; text-align: center; }
-  .pl-hero-chip-top { right: 8px !important; top: -16px !important; }
-  .pl-hero-chip-bottom { left: 8px !important; bottom: -16px !important; }
+  .pl-hero-chip-top, .pl-hero-chip-bottom { display: none !important; }
 }
 
 /* Layouts the spec fixes at desktop widths, collapsed for phones. */
