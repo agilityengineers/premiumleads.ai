@@ -98,12 +98,11 @@ button:disabled { opacity: .5; cursor: not-allowed !important; }
 .pl-menu-btn { display: none; }
 @media (max-width: 800px) {
   .pl-header-inner { padding: 10px var(--pl-gutter); gap: 8px; }
-  /* The logo yields width to the buttons instead of wrapping the row: flex-basis 0 so
-     its intrinsic width never forces a second line, and the image scales to fit. */
+  /* Keep the logo flexible so it and the menu stay on one row. */
   .pl-header-logo { flex: 1 1 0%; min-width: 0; min-height: 44px; }
   .pl-header-logo img { height: auto; width: auto; max-height: 30px; max-width: 100%; }
   .pl-header-login { display: none; }
-  .pl-header-cta { font-size: 14px; padding: 10px 14px; }
+  .pl-header-cta { display: none; }
   .pl-menu-btn { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-right: -8px; border: 0; border-radius: 10px; background: transparent; color: #0B2347; cursor: pointer; }
   .pl-menu-btn:active { background: rgba(11,35,71,.06); }
   .pl-menu-btn svg { width: 24px; height: 24px; }
@@ -113,13 +112,7 @@ button:disabled { opacity: .5; cursor: not-allowed !important; }
   .pl-nav .pl-nav-login { display: block; }
 }
 @media (max-width: 480px) {
-  .pl-header-cta { font-size: 13.5px; padding: 9px 12px; }
   .pl-header-logo img { max-height: 28px; }
-}
-/* On the narrowest phones only the mark fits: the wordmark's icon is its left 130px
-   of 800 (35px at this height), so crop to it rather than shrink the whole word. */
-@media (max-width: 360px) {
-  .pl-header-logo img { width: 36px; height: 28px; max-width: none; object-fit: cover; object-position: left center; }
 }
 
 /* ------------------------------------------------------------- footer -- */
