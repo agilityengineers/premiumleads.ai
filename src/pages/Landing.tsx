@@ -111,11 +111,6 @@ export default function Landing({ slug }: { slug: string }) {
               <CtaLink className="pl-hero-cta hov-lift hov-white" style={{ background: "linear-gradient(135deg,#1E88E5,#0C2E63)", color: "#fff", fontWeight: 700, fontSize: 16, padding: "16px 26px", borderRadius: 10, boxShadow: "0 14px 30px -12px rgba(30,136,229,.6)", transition: "transform .2s" }} />
               <a href="#how" onClick={onLinkClick} className="hov-border-blue hov-ink" style={{ color: "#0B2347", fontWeight: 600, fontSize: 16, padding: "16px 10px", borderBottom: "2px solid rgba(11,35,71,.2)" }}>{v.ctaTransitional}</a>
             </div>
-            <div style={{ display: "flex", gap: 28, marginTop: 40, flexWrap: "wrap" }}>
-              {(v.stats || []).map((s, i) => (
-                <div key={i}><div style={{ fontFamily: SORA, fontWeight: 700, fontSize: 26, color: "#0C2E63", letterSpacing: "-.02em" }}>{s.v}</div><div style={{ fontSize: 13, color: "#6B7A90", fontWeight: 600 }}>{s.l}</div></div>
-              ))}
-            </div>
           </div>
           <div style={{ position: "relative" }}>
             <div style={{ position: "relative", borderRadius: 18, background: "#0D1B2E", padding: 10, boxShadow: "0 40px 80px -30px rgba(12,46,99,.45)" }}>
