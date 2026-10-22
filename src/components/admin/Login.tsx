@@ -17,7 +17,7 @@ function AuthFrame({ onSubmit, children }: { onSubmit: (e: FormEvent<HTMLFormEle
           {children}
         </div>
         <div style={{ textAlign: "center", fontSize: 13 }}>
-          <a href="/" onClick={onLinkClick} style={{ fontWeight: 700, color: "#0B2347" }}>← Back to the site</a>
+          <a href="/" onClick={onLinkClick} style={{ fontWeight: 700, color: "#0B2347", display: "inline-block", padding: "10px 8px" }}>← Back to the site</a>
         </div>
       </form>
     </div>

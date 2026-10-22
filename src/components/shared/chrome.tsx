@@ -1,9 +1,12 @@
 /**
  * Header and footer shared by the public pages, ported from the design
- * package (Premium Leads.dc.html / Premium Leads Resources.dc.html). Inline
- * styles carry the exact values; hover states are the classes in index.css.
+ * package (Premium Leads.dc.html / Premium Leads Resources.dc.html). The
+ * header's layout lives in index.css (`.pl-header*`, `.pl-nav`) because it
+ * changes shape on a phone: under 800px the nav collapses behind a menu
+ * button and "Log in" moves into that menu, leaving the logo and the primary
+ * CTA on one row. Hover states are the classes in index.css.
  */
-import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import { onLinkClick } from "../../router";
 import type { SiteSettings } from "../../../shared/siteSettingsSchema";
 
@@ -14,24 +17,46 @@ export function PublicHeader({
 }: {
   slug: string; ctaHref: string; ctaTarget: "_self" | "_blank"; ctaLabelShort: string; onCtaClick?: () => void; loginUrl: string; activeNav?: "resources"; homeHref?: string;
 }) {
+  const [open, setOpen] = useState(false);
   const base = slug && slug !== "" ? `/${slug}` : "/";
+
+  // The menu closes on Escape and whenever the viewport grows past the phone layout.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const mq = window.matchMedia("(min-width: 801px)");
+    const onResize = () => { if (mq.matches) setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    mq.addEventListener("change", onResize);
+    return () => { window.removeEventListener("keydown", onKey); mq.removeEventListener("change", onResize); };
+  }, [open]);
+
+  const go = (e: MouseEvent<HTMLAnchorElement>) => { setOpen(false); onLinkClick(e); };
   const navLink = (href: string, label: string, active = false) => (
-    <a key={label} href={href} onClick={onLinkClick} className={active ? undefined : "hov-blue"} style={{ color: active ? "#1E88E5" : "#33465F" }}>{label}</a>
+    <a key={label} href={href} onClick={go} className={active ? "is-active" : "hov-blue"}>{label}</a>
   );
   return (
-    <header style={{ position: "sticky", top: 0, zIndex: 50, background: HEADER_BG, backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(11,35,71,.08)" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "14px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
-        <a href={homeHref} onClick={onLinkClick} style={{ display: "flex", alignItems: "center" }}><img src="/logo-wordmark.png" alt="Premium Leads" style={{ height: 34, width: "auto", display: "block" }} /></a>
-        <nav style={{ display: "flex", alignItems: "center", gap: 22, fontSize: 14.5, fontWeight: 600, whiteSpace: "nowrap", order: 3, flex: "1 1 100%", justifyContent: "center", marginTop: 8 }}>
+    <header className="pl-header">
+      <div className="pl-header-inner">
+        <a href={homeHref} onClick={go} className="pl-header-logo" aria-label="Premium Leads home"><img src="/logo-wordmark.png" alt="Premium Leads" width={264} height={34} /></a>
+        <nav id="pl-site-nav" className={`pl-nav${open ? " is-open" : ""}`} aria-label="Site">
           {navLink(`${base}#capabilities`, "Capabilities")}
           {navLink(`${base}#how`, "The plan")}
           {navLink(`${base}#usecases`, "Use cases")}
           {navLink(activeNav === "resources" ? "/resources" : `${base}#resources`, "Resources", activeNav === "resources")}
           {navLink(`${base}#faq`, "FAQ")}
+          <a href={loginUrl} className="pl-nav-login hov-blue">Log in</a>
         </nav>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flex: "none" }}>
-          <a href={loginUrl} className="hov-bg-soft hov-ink" style={{ color: "#0B2347", fontWeight: 600, fontSize: 14.5, padding: "10px 16px", borderRadius: 8, whiteSpace: "nowrap" }}>Log in</a>
-          <a href={ctaHref} target={ctaTarget} rel="noopener" onClick={(e) => { onCtaClick?.(); if (ctaTarget === "_self") onLinkClick(e); }} className="hov-bg-blue" style={{ background: "#0C2E63", color: "#fff", fontWeight: 600, fontSize: 14.5, padding: "11px 18px", borderRadius: 8, transition: "background .2s", whiteSpace: "nowrap" }}>{ctaLabelShort}</a>
+        <div className="pl-header-actions">
+          <a href={loginUrl} className="pl-header-login hov-bg-soft hov-ink">Log in</a>
+          <a href={ctaHref} target={ctaTarget} rel="noopener" onClick={(e) => { onCtaClick?.(); setOpen(false); if (ctaTarget === "_self") onLinkClick(e); }} className="pl-header-cta hov-bg-blue">{ctaLabelShort}</a>
+          <button type="button" className="pl-menu-btn" aria-expanded={open} aria-controls="pl-site-nav" aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen((v) => !v)}>
+            {open ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+            )}
+          </button>
         </div>
       </div>
     </header>
@@ -39,19 +64,18 @@ export function PublicHeader({
 }
 
 export function PublicFooter({ site, contactHref = "#contact" }: { site: SiteSettings; contactHref?: string }) {
-  const link: CSSProperties = { color: "rgba(230,238,248,.8)" };
   return (
-    <footer style={{ background: "#0D1B2E", color: "rgba(230,238,248,.6)", padding: "44px 28px", borderTop: "1px solid rgba(230,238,248,.1)" }}>
+    <footer style={{ background: "#0D1B2E", color: "rgba(230,238,248,.6)", padding: "44px var(--pl-gutter)", borderTop: "1px solid rgba(230,238,248,.1)" }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 10 }}>
-          <img src="/logo-wordmark-white.png" alt="Premium Leads" style={{ height: 36, width: "auto", maxWidth: "none", display: "block", objectFit: "contain", flex: "none" }} />
+          <img src="/logo-wordmark-white.png" alt="Premium Leads" width={257} height={36} loading="lazy" style={{ height: 36, width: "auto", maxWidth: "none", display: "block", objectFit: "contain", flex: "none" }} />
           <span style={{ fontSize: 13 }}>Scalable, multi-channel engagement driven by real data.</span>
         </div>
-        <div style={{ display: "flex", gap: 22, fontSize: 13.5, fontWeight: 600, flexWrap: "wrap" }}>
-          <a href={site.loginUrl} className="hov-cyan" style={link}>Log in</a>
-          <a href={contactHref} onClick={onLinkClick} className="hov-cyan" style={link}>Contact us</a>
-          <a href={site.termsUrl || "#"} className="hov-cyan" style={link}>Terms of service</a>
-          <a href={site.privacyUrl || "#"} className="hov-cyan" style={link}>Privacy policy</a>
+        <div className="pl-footer-links">
+          <a href={site.loginUrl} className="hov-cyan">Log in</a>
+          <a href={contactHref} onClick={onLinkClick} className="hov-cyan">Contact us</a>
+          <a href={site.termsUrl || "#"} className="hov-cyan">Terms of service</a>
+          <a href={site.privacyUrl || "#"} className="hov-cyan">Privacy policy</a>
         </div>
         <div style={{ fontSize: 12.5, maxWidth: "34ch", lineHeight: 1.5 }}>
           © {new Date().getFullYear()} Premium Leads. All rights reserved.<br />
@@ -71,7 +95,7 @@ function FooterNote({ site }: { site: SiteSettings }) {
   return (
     <>
       {note.slice(0, i)}
-      <a href={site.footerNoteLinkUrl} target="_blank" rel="noopener" className="hov-cyan" style={{ color: "rgba(230,238,248,.85)", fontWeight: 600 }}>{text}</a>
+      <a href={site.footerNoteLinkUrl} target="_blank" rel="noopener" className="hov-cyan" style={{ color: "rgba(230,238,248,.85)", fontWeight: 600, display: "inline-block", padding: "6px 0" }}>{text}</a>
       {note.slice(i + text.length)}
     </>
   );

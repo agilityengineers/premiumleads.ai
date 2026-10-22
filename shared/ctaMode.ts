@@ -12,23 +12,9 @@
  * `funnelSchema`. A leaf module on purpose (see AD's note on import cycles).
  */
 import { z } from "zod";
+import { CTA_MODES } from "./cta";
 
-export const ctaModeSchema = z.enum(["prequalify", "book-call"]);
-export type CtaMode = z.infer<typeof ctaModeSchema>;
+export { CTA_MODES, DEFAULT_CTA_MODE, resolveCtaMode, ctaHref } from "./cta";
+export type { CtaMode } from "./cta";
 
-export const DEFAULT_CTA_MODE: CtaMode = "prequalify";
-
-/** The CTA mode a page uses: its own override, else the site default. */
-export function resolveCtaMode(
-  variantMode: CtaMode | null | undefined,
-  siteMode: CtaMode | null | undefined,
-): CtaMode {
-  return variantMode ?? siteMode ?? DEFAULT_CTA_MODE;
-}
-
-/** Where the primary CTA sends people for a given mode. */
-export function ctaHref(mode: CtaMode, slug: string, bookingUrl: string): string {
-  return mode === "book-call"
-    ? bookingUrl
-    : `/get-started?variant=${encodeURIComponent(slug)}`;
-}
+export const ctaModeSchema = z.enum(CTA_MODES);

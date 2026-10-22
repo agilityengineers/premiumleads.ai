@@ -2,14 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------------
+   Responsive rhythm. The public pages carry the design package's exact
+   desktop values inline; the ones that must shrink on a phone are read from
+   these variables so the desktop stays pixel-identical and phones get a
+   tighter rhythm from one place. Phone = 640px and under; the 800px and
+   900px breakpoints below collapse the two-column layouts.
+   ------------------------------------------------------------------------ */
+:root {
+  --pl-gutter: 28px;      /* page side padding */
+  --pl-sec: 104px;        /* section vertical rhythm */
+  --pl-sec-lg: 108px;     /* the dark bands */
+  --pl-sec-sm: 56px;      /* get-started / resources tops */
+  --pl-hero-top: 88px;
+  --pl-hero-bottom: 96px;
+  --pl-gap: 56px;         /* two-column grid gap */
+  --pl-card: 36px;        /* large cards */
+  --pl-card-md: 28px;     /* capability / intake cards */
+  --pl-card-lg: 40px;     /* result cards */
+  --pl-media-h: 280px;    /* resource snapshot block */
+  --pl-header-h: 124px;   /* sticky header: logo row + nav row */
+}
+@media (max-width: 800px) {
+  :root { --pl-header-h: 64px; }
+}
+@media (max-width: 640px) {
+  :root {
+    --pl-gutter: 20px;
+    --pl-sec: 64px;
+    --pl-sec-lg: 72px;
+    --pl-sec-sm: 28px;
+    --pl-hero-top: 40px;
+    --pl-hero-bottom: 64px;
+    --pl-gap: 40px;
+    --pl-card: 24px;
+    --pl-card-md: 22px;
+    --pl-card-lg: 26px;
+    --pl-media-h: 220px;
+  }
+}
+
 /* Base styles from the design package. Each page sets its own body background
    via a class on <body> (landing/get-started/resources: #F6F9FD; admin: #F1F5FA). */
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: #F6F9FD; color: #0B2347; font-family: Manrope, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
 body.pl-admin { background: #F1F5FA; }
 a { color: #1E88E5; text-decoration: none; }
 a:hover { color: #0C2E63; }
-section { scroll-margin-top: 84px; }
+section { scroll-margin-top: calc(var(--pl-header-h) + 8px); }
+img, iframe, video { max-width: 100%; }
 details summary::-webkit-details-marker { display: none; }
 details[open] [data-plus] { transform: rotate(45deg); }
 input, textarea, select, button { font-family: inherit; }
@@ -20,36 +61,148 @@ button:disabled { opacity: .5; cursor: not-allowed !important; }
 @keyframes pl-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 @keyframes pl-spin { to { transform: rotate(360deg); } }
 
-/* `style-hover` from the .dc.html specs, as classes. */
-.hov-blue:hover { color: #1E88E5 !important; }
-.hov-cyan:hover { color: #00B2EF !important; }
-.hov-ink:hover { color: #0B2347 !important; }
-.hov-white:hover { color: #fff !important; }
-.hov-night:hover { color: #0D1B2E !important; }
-.hov-bg-soft:hover { background: rgba(11,35,71,.06) !important; }
-.hov-bg-soft-light:hover { background: rgba(230,238,248,.08) !important; color: #fff !important; }
-.hov-bg-blue:hover { background: #1E88E5 !important; color: #fff !important; }
-.hov-bg-white:hover { background: #fff !important; color: #0D1B2E !important; }
-.hov-border-blue:hover { border-color: #1E88E5 !important; }
-.hov-lift:hover { transform: translateY(-2px); }
-.hov-lift-3:hover { transform: translateY(-3px); }
-.hov-card:hover { transform: translateY(-3px); box-shadow: 0 24px 40px -28px rgba(12,46,99,.4); }
+/* `style-hover` from the .dc.html specs, as classes. Only on devices that can
+   hover — on a touchscreen a sticky :hover would leave cards lifted after a tap. */
+@media (hover: hover) {
+  .hov-blue:hover { color: #1E88E5 !important; }
+  .hov-cyan:hover { color: #00B2EF !important; }
+  .hov-ink:hover { color: #0B2347 !important; }
+  .hov-white:hover { color: #fff !important; }
+  .hov-night:hover { color: #0D1B2E !important; }
+  .hov-bg-soft:hover { background: rgba(11,35,71,.06) !important; }
+  .hov-bg-soft-light:hover { background: rgba(230,238,248,.08) !important; color: #fff !important; }
+  .hov-bg-blue:hover { background: #1E88E5 !important; color: #fff !important; }
+  .hov-bg-white:hover { background: #fff !important; color: #0D1B2E !important; }
+  .hov-border-blue:hover { border-color: #1E88E5 !important; }
+  .hov-lift:hover { transform: translateY(-2px); }
+  .hov-lift-3:hover { transform: translateY(-3px); }
+  .hov-card:hover { transform: translateY(-3px); box-shadow: 0 24px 40px -28px rgba(12,46,99,.4); }
+}
+/* Touch feedback instead: a quick press state on the primary buttons. */
+@media (hover: none) {
+  .hov-lift:active, .hov-lift-3:active, .hov-bg-blue:active { transform: scale(.985); }
+}
+
+/* ------------------------------------------------------------- header -- */
+.pl-header { position: sticky; top: 0; z-index: 50; background: rgba(246,249,253,.86); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(11,35,71,.08); }
+.pl-header-inner { max-width: 1200px; margin: 0 auto; padding: 14px var(--pl-gutter); display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.pl-header-logo { display: flex; align-items: center; }
+.pl-header-logo img { height: 34px; width: auto; display: block; }
+.pl-nav { display: flex; align-items: center; gap: 22px; font-size: 14.5px; font-weight: 600; white-space: nowrap; order: 3; flex: 1 1 100%; justify-content: center; margin-top: 8px; }
+.pl-nav a { color: #33465F; }
+.pl-nav a.is-active { color: #1E88E5; }
+.pl-nav .pl-nav-login { display: none; }
+.pl-header-actions { display: flex; align-items: center; gap: 10px; flex: none; }
+.pl-header-login { color: #0B2347; font-weight: 600; font-size: 14.5px; padding: 10px 16px; border-radius: 8px; white-space: nowrap; }
+.pl-header-cta { background: #0C2E63; color: #fff; font-weight: 600; font-size: 14.5px; padding: 11px 18px; border-radius: 8px; transition: background .2s; white-space: nowrap; }
+.pl-menu-btn { display: none; }
+@media (max-width: 800px) {
+  .pl-header-inner { padding: 10px var(--pl-gutter); gap: 8px; }
+  /* The logo yields width to the buttons instead of wrapping the row: flex-basis 0 so
+     its intrinsic width never forces a second line, and the image scales to fit. */
+  .pl-header-logo { flex: 1 1 0%; min-width: 0; min-height: 44px; }
+  .pl-header-logo img { height: auto; width: auto; max-height: 30px; max-width: 100%; }
+  .pl-header-login { display: none; }
+  .pl-header-cta { font-size: 14px; padding: 10px 14px; }
+  .pl-menu-btn { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-right: -8px; border: 0; border-radius: 10px; background: transparent; color: #0B2347; cursor: pointer; }
+  .pl-menu-btn:active { background: rgba(11,35,71,.06); }
+  .pl-menu-btn svg { width: 24px; height: 24px; }
+  .pl-nav { display: none; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 0; margin: 6px 0 4px; white-space: normal; font-size: 16px; border-top: 1px solid rgba(11,35,71,.08); }
+  .pl-nav.is-open { display: flex; }
+  .pl-nav a { display: block; padding: 14px 4px; border-bottom: 1px solid rgba(11,35,71,.06); }
+  .pl-nav .pl-nav-login { display: block; }
+}
+@media (max-width: 480px) {
+  .pl-header-cta { font-size: 13.5px; padding: 9px 12px; }
+  .pl-header-logo img { max-height: 28px; }
+}
+/* On the narrowest phones only the mark fits: the wordmark's icon is its left 130px
+   of 800 (35px at this height), so crop to it rather than shrink the whole word. */
+@media (max-width: 360px) {
+  .pl-header-logo img { width: 36px; height: 28px; max-width: none; object-fit: cover; object-position: left center; }
+}
+
+/* ------------------------------------------------------------- footer -- */
+.pl-footer-links { display: flex; gap: 4px 22px; font-size: 13.5px; font-weight: 600; flex-wrap: wrap; }
+.pl-footer-links a { color: rgba(230,238,248,.8); padding: 10px 0; }
+
+/* ----------------------------------------------------- landing layouts -- */
+/* 3-item divider grids (problems, plan steps). A grid that lands on two
+   columns leaves one empty cell showing the divider colour; span the last
+   item across the row instead. Container-query browsers only; others keep
+   the auto-fit behaviour. */
+.pl-cq { container-type: inline-size; }
+@container (min-width: 561px) and (max-width: 841px) {
+  .pl-trio > :nth-child(odd):last-child { grid-column: 1 / -1; }
+}
+@container (min-width: 842px) {
+  .pl-trio > :nth-child(3n + 1):last-child { grid-column: 1 / -1; }
+}
+/* Before → after rows in the "success" card stack on a phone. */
+@media (max-width: 640px) {
+  .pl-before-after { grid-template-columns: minmax(0,1fr) !important; gap: 4px !important; }
+  .pl-before-after > .pl-arrow { transform: rotate(90deg); justify-self: start; line-height: 1; }
+  .pl-hero-cta { width: 100%; text-align: center; }
+  .pl-hero-chip-top { right: 8px !important; top: -16px !important; }
+  .pl-hero-chip-bottom { left: 8px !important; bottom: -16px !important; }
+}
 
 /* Layouts the spec fixes at desktop widths, collapsed for phones. */
 @media (max-width: 800px) {
-  .pl-getstarted-main { grid-template-columns: minmax(0,1fr) !important; }
-  .pl-getstarted-aside { position: static !important; }
+  .pl-getstarted-main { grid-template-columns: minmax(0,1fr) !important; gap: 20px !important; }
+  .pl-getstarted-aside { position: static !important; gap: 10px !important; }
+  .pl-gs-desktop { display: none !important; }
   .pl-two-col { grid-template-columns: 1fr !important; }
   .pl-two-col > * { grid-column: auto !important; }
 }
+@media (min-width: 801px) {
+  .pl-gs-mobile { display: none !important; }
+}
+@media (max-width: 480px) {
+  .pl-options { grid-template-columns: minmax(0,1fr) !important; }
+  .pl-form-nav { flex-direction: column-reverse; align-items: stretch !important; }
+  .pl-form-nav > * { width: 100%; }
+  .pl-form-nav-right { flex-direction: column-reverse; align-items: stretch !important; }
+  .pl-form-nav-right > span { text-align: center; }
+  .pl-form-nav button { width: 100%; }
+}
+
+/* ---------------------------------------------------------------- forms -- */
+/* iOS Safari zooms the page when a focused field is under 16px. */
+@media (max-width: 640px) {
+  input:not([type=checkbox]):not([type=radio]), select, textarea { font-size: 16px !important; }
+}
+
+/* ---------------------------------------------------------------- admin -- */
+.pl-admin-menu-btn { display: none; }
 @media (max-width: 900px) {
-  .pl-admin-shell { grid-template-columns: minmax(0,1fr) !important; }
-  .pl-admin-aside { position: static !important; height: auto !important; }
-  .pl-admin-main { padding: 20px 16px !important; }
+  .pl-admin-shell { grid-template-columns: minmax(0,1fr) !important; grid-template-rows: auto minmax(0,1fr); }
+  .pl-admin-aside { position: sticky !important; top: 0; height: auto !important; max-height: 100vh; padding: 10px 14px !important; gap: 0 !important; padding-top: max(10px, env(safe-area-inset-top)) !important; }
+  .pl-admin-aside-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .pl-admin-aside-top img { width: 150px !important; margin: 0 !important; }
+  .pl-admin-menu-btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(230,238,248,.22); background: rgba(230,238,248,.06); color: #fff; border-radius: 9px; padding: 9px 12px; font-size: 13.5px; font-weight: 700; font-family: inherit; cursor: pointer; min-height: 40px; max-width: 60%; }
+  .pl-admin-menu-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pl-admin-nav, .pl-admin-aside-foot { display: none !important; }
+  .pl-admin-aside.is-open .pl-admin-nav { display: flex !important; flex-direction: column; gap: 2px; padding-top: 10px; }
+  .pl-admin-aside.is-open .pl-admin-aside-foot { display: grid !important; }
+  .pl-admin-main { padding: 20px var(--pl-gutter) 40px !important; }
   .pl-admin-resource { grid-template-columns: minmax(0,1fr) !important; }
   .pl-lead-row { grid-template-columns: minmax(0,1fr) !important; }
 }
+@media (min-width: 901px) {
+  .pl-admin-aside-top { display: contents; }
+  .pl-admin-nav { display: contents; }
+}
+
+/* ------------------------------------------------------------ utilities -- */
 @media (max-width: 640px) {
   .pl-hide-mobile { display: none !important; }
   .pl-pill-bar { display: none !important; }
+}
+.pl-pill-bar { bottom: calc(18px + env(safe-area-inset-bottom)) !important; }
+
+/* Respect the user's motion setting: no floating chips, no smooth scroll. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }

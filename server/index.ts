@@ -6,6 +6,7 @@
  * previews see the right thing. Same arrangement as The Authority Desk.
  */
 import express from "express";
+import compression from "compression";
 import cookieParser from "cookie-parser";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -41,7 +42,7 @@ type Meta = { title: string; description: string; canonical: string; ogImage: st
 async function metaFor(seg: string, origin: string): Promise<Meta> {
   const site = await readSetting("site");
   const suffix = site.siteTitle || "Premium Leads";
-  const fallbackImage = site.ogImage || `${origin}/logo-wordmark.png`;
+  const fallbackImage = site.ogImage || `${origin}/og-default.png`;
   const base: Meta = {
     title: `${suffix} — Multi-channel engagement platform`,
     description: "Find verified decision-makers and engage them across LinkedIn, email, phone and video. Book a call.",
@@ -130,6 +131,8 @@ const NONINDEXABLE = new Set(["admin", "get-started", "api"]);
 export async function createApp() {
   const app = express();
   app.set("trust proxy", true);
+  // gzip/brotli-negotiated responses: the client bundle, JSON and HTML shrink 3–4×, which matters most on a phone.
+  app.use(compression());
   app.use(cookieParser());
   app.use(
     "/api",
@@ -170,7 +173,17 @@ export async function createApp() {
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.join(root, "dist"), { index: false }));
+    // Vite content-hashes everything under /assets, so those can be cached for a year; the
+    // logos and share image keep their names and get an hour.
+    app.use(
+      express.static(path.join(root, "dist"), {
+        index: false,
+        setHeaders: (res, filePath) => {
+          const hashed = filePath.includes(`${path.sep}assets${path.sep}`);
+          res.setHeader("Cache-Control", hashed ? "public, max-age=31536000, immutable" : "public, max-age=3600");
+        },
+      }),
+    );
   }
 
   // HTML handler (last): resolve meta and serve the SPA shell.
@@ -200,7 +213,7 @@ export async function createApp() {
         .replace(/%META_OG_TYPE%/g, escapeHtml(m.ogType))
         .replace(/%META_ROBOTS%/g, escapeHtml(m.robots))
         .replace("<!--ANALYTICS-->", await analyticsTags());
-      res.status(200).set("Content-Type", "text/html").end(html);
+      res.status(200).set("Content-Type", "text/html").set("Cache-Control", "no-cache").end(html);
     } catch (err) {
       if (vite) vite.ssrFixStacktrace(err as Error);
       next(err);
