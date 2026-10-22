@@ -118,13 +118,14 @@ export default function GetStarted() {
   }).concat([{ n: "✓", title: "Book your call", bg: done ? "rgba(30,136,229,.1)" : "transparent", fg: done ? "#0C2E63" : "#6B7A90", dotBg: done ? "#1E88E5" : "rgba(11,35,71,.08)", dotFg: done ? "#fff" : "#6B7A90" }]);
 
   const nurture = data.nurture;
+  const progress = done ? 100 : ((current + 1) / (sections.length + 1)) * 100;
   const vars = { firstName, doorNameLower, doorName };
 
   return (
     <>
       <header style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(246,249,253,.9)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(11,35,71,.08)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "14px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20 }}>
-          <a href={backHref} onClick={onLinkClick} style={{ display: "flex", alignItems: "center" }}><img src="/logo-wordmark.png" alt="Premium Leads" style={{ height: 32, width: "auto", display: "block" }} /></a>
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "12px var(--pl-gutter)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20 }}>
+          <a href={backHref} onClick={onLinkClick} aria-label="Back to the site" style={{ display: "flex", alignItems: "center", minHeight: 44 }}><img src="/logo-wordmark.png" alt="Premium Leads" width={249} height={32} style={{ height: 32, width: "auto", display: "block" }} /></a>
           <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 14, fontWeight: 600 }}>
             <span className="pl-hide-mobile" style={{ color: "#6B7A90" }}>Coming from: <span style={{ color: "#0B2347" }}>{doorName}</span></span>
             <a href={data.loginUrl} className="hov-bg-soft hov-ink" style={{ color: "#0B2347", padding: "9px 14px", borderRadius: 8, whiteSpace: "nowrap" }}>Log in</a>
@@ -132,12 +133,12 @@ export default function GetStarted() {
         </div>
       </header>
 
-      <main className="pl-getstarted-main" style={{ maxWidth: 1100, margin: "0 auto", padding: "56px 28px 104px", display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,2fr)", gap: 48, alignItems: "start" }}>
+      <main className="pl-getstarted-main" style={{ maxWidth: 1100, margin: "0 auto", padding: "var(--pl-sec-sm) var(--pl-gutter) var(--pl-sec)", display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,2fr)", gap: 48, alignItems: "start" }}>
         <aside className="pl-getstarted-aside" style={{ position: "sticky", top: 92, display: "grid", gap: 18 }}>
           <div style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#1E88E5" }}>Get started</div>
           <h1 style={{ fontFamily: SORA, fontWeight: 700, fontSize: "clamp(28px,3.4vw,40px)", lineHeight: 1.08, letterSpacing: "-.025em", margin: 0 }}>{data.heading}</h1>
-          <p style={{ fontSize: 15.5, lineHeight: 1.6, color: "#4A5B74", margin: 0 }}>A few questions so your advisor can prepare — then pick a time on the calendar. Nothing here is shared or published.</p>
-          <ol style={{ listStyle: "none", margin: "8px 0 0", padding: 0, display: "grid", gap: 6 }}>
+          <p className="pl-gs-desktop" style={{ fontSize: 15.5, lineHeight: 1.6, color: "#4A5B74", margin: 0 }}>A few questions so your advisor can prepare — then pick a time on the calendar. Nothing here is shared or published.</p>
+          <ol className="pl-gs-desktop" style={{ listStyle: "none", margin: "8px 0 0", padding: 0, display: "grid", gap: 6 }}>
             {stepsNav.map((s, i) => (
               <li key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 9, background: s.bg }}>
                 <span style={{ width: 22, height: 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, background: s.dotBg, color: s.dotFg }}>{s.n}</span>
@@ -145,13 +146,22 @@ export default function GetStarted() {
               </li>
             ))}
           </ol>
-          <div style={{ fontSize: 13, color: "#6B7A90", lineHeight: 1.5, borderTop: "1px solid rgba(11,35,71,.1)", paddingTop: 14 }}>Takes about 3 minutes. Already did a Brand Voice Interview or Authority Desk intake? Use the same email — we'll skip what we already know.</div>
+          <div className="pl-gs-mobile" aria-live="polite" style={{ display: "grid", gap: 8, marginTop: 4 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13, fontWeight: 700, color: "#33465F" }}>
+              <span>{done ? "All done" : `Step ${current + 1} of ${sections.length}`}</span>
+              <span style={{ color: "#6B7A90", textAlign: "right" }}>{done ? "Book your call" : stepsNav[current]?.title}</span>
+            </div>
+            <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)} style={{ height: 6, borderRadius: 100, background: "rgba(11,35,71,.1)", overflow: "hidden" }}>
+              <div style={{ height: "100%", width: `${progress}%`, background: "linear-gradient(90deg,#1E88E5,#00B2EF)", borderRadius: 100, transition: "width .3s" }} />
+            </div>
+          </div>
+          <div className="pl-gs-desktop" style={{ fontSize: 13, color: "#6B7A90", lineHeight: 1.5, borderTop: "1px solid rgba(11,35,71,.1)", paddingTop: 14 }}>Takes about 3 minutes. Already did a Brand Voice Interview or Authority Desk intake? Use the same email — we'll skip what we already know.</div>
         </aside>
 
         <section style={{ display: "grid", gap: 20 }}>
           {!done && section && (
             <>
-              <div style={{ background: "#fff", border: "1px solid rgba(11,35,71,.08)", borderRadius: 18, padding: 34, boxShadow: "0 24px 48px -40px rgba(12,46,99,.4)", display: "grid", gap: 22 }}>
+              <div style={{ background: "#fff", border: "1px solid rgba(11,35,71,.08)", borderRadius: 18, padding: "var(--pl-card)", boxShadow: "0 24px 48px -40px rgba(12,46,99,.4)", display: "grid", gap: 22 }}>
                 <div>
                   <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#1E88E5", marginBottom: 8 }}>{section.kicker}</div>
                   <h2 style={{ fontFamily: SORA, fontWeight: 700, fontSize: 26, letterSpacing: "-.02em", margin: "0 0 6px" }}>{section.heading}</h2>
@@ -162,20 +172,20 @@ export default function GetStarted() {
                   {section.questions.map((q) => <Question key={q.id} q={q} value={answers[q.id]} error={errors[q.id]} onChange={(v) => setAnswer(q.id, v)} />)}
                 </div>
                 {submitError && <div style={{ fontSize: 13.5, color: "#B02A2A", fontWeight: 600 }}>{submitError}</div>}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, borderTop: "1px solid rgba(11,35,71,.08)", paddingTop: 20, flexWrap: "wrap" }}>
+                <div className="pl-form-nav" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, borderTop: "1px solid rgba(11,35,71,.08)", paddingTop: 20, flexWrap: "wrap" }}>
                   <button type="button" onClick={back} disabled={isFirst} style={{ cursor: "pointer", background: "#fff", border: "1px solid rgba(11,35,71,.12)", color: "#33465F", borderRadius: 9, padding: "12px 18px", fontWeight: 700, fontSize: 14.5, fontFamily: "inherit" }}>← Back</button>
-                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <div className="pl-form-nav-right" style={{ display: "flex", alignItems: "center", gap: 14, marginLeft: "auto" }}>
                     <span style={{ fontSize: 13, color: "#6B7A90" }}>Step {current + 1} of {sections.length}</span>
                     <button type="button" onClick={next} disabled={busy} className="hov-bg-blue" style={{ cursor: "pointer", background: "#0C2E63", color: "#fff", border: 0, borderRadius: 9, padding: "13px 22px", fontWeight: 700, fontSize: 14.5, fontFamily: "inherit", transition: "background .2s" }}>{busy ? "Saving…" : isLast ? "Finish & see next step →" : "Continue →"}</button>
                   </div>
                 </div>
               </div>
-              <div style={{ fontSize: 12.5, color: "#6B7A90", textAlign: "center" }}>Prefer to talk first? <a href={bookingUrl} target="_blank" rel="noopener" style={{ fontWeight: 700 }}>Book a call without the form →</a></div>
+              <div style={{ fontSize: 13, color: "#6B7A90", textAlign: "center" }}>Prefer to talk first? <a href={bookingUrl} target="_blank" rel="noopener" style={{ fontWeight: 700, display: "inline-block", padding: "8px 2px" }}>Book a call without the form →</a></div>
             </>
           )}
 
           {done && done.destination === "book" && (
-            <div style={{ background: "#0C2E63", backgroundImage: "radial-gradient(600px 360px at 100% 0%, rgba(0,178,239,.35), transparent 60%)", color: "#fff", borderRadius: 18, padding: 40, display: "grid", gap: 18, boxShadow: "0 30px 60px -36px rgba(12,46,99,.6)" }}>
+            <div style={{ background: "#0C2E63", backgroundImage: "radial-gradient(600px 360px at 100% 0%, rgba(0,178,239,.35), transparent 60%)", color: "#fff", borderRadius: 18, padding: "var(--pl-card-lg)", display: "grid", gap: 18, boxShadow: "0 30px 60px -36px rgba(12,46,99,.6)" }}>
               <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".18em", textTransform: "uppercase", color: "#00B2EF" }}>You're pre-qualified</div>
               <h2 style={{ fontFamily: SORA, fontWeight: 700, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-.02em", lineHeight: 1.08, margin: 0, color: "#fff" }}>{firstName}, let's pick a time.</h2>
               <p style={{ margin: 0, fontSize: 16.5, lineHeight: 1.6, color: "rgba(255,255,255,.78)", maxWidth: "52ch" }}>A Premium Leads advisor will walk through your {doorNameLower} goals and show you exactly what your first campaign looks like. Your answers are already on their desk.</p>
@@ -184,7 +194,7 @@ export default function GetStarted() {
             </div>
           )}
           {done && done.destination !== "book" && (
-            <div style={{ background: "#fff", border: "1px solid rgba(11,35,71,.08)", borderRadius: 18, padding: 40, display: "grid", gap: 16, boxShadow: "0 24px 48px -40px rgba(12,46,99,.4)" }}>
+            <div style={{ background: "#fff", border: "1px solid rgba(11,35,71,.08)", borderRadius: 18, padding: "var(--pl-card-lg)", display: "grid", gap: 16, boxShadow: "0 24px 48px -40px rgba(12,46,99,.4)" }}>
               <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".18em", textTransform: "uppercase", color: "#1E88E5" }}>{fill(nurture.eyebrow || "Thanks, {firstName}", vars)}</div>
               <h2 style={{ fontFamily: SORA, fontWeight: 700, fontSize: "clamp(26px,3.4vw,38px)", letterSpacing: "-.02em", lineHeight: 1.08, margin: 0 }}>{fill(nurture.heading || "Good timing matters. We'll stay in touch.", vars)}</h2>
               <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6, color: "#4A5B74", maxWidth: "52ch" }}>{fill(nurture.body, vars)}</p>
@@ -231,7 +241,7 @@ function Question({ q, value, error, onChange }: { q: FormQuestion; value: strin
         <textarea id={`field-${q.id}`} name={q.id} value={val as string} placeholder={q.placeholder} onChange={(e) => onChange(e.target.value)} rows={3} style={{ ...input, resize: "vertical", lineHeight: 1.5 }} />
       )}
       {isOptions && (
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${q.columns},minmax(0,1fr))`, gap: 8 }}>
+        <div className="pl-options" role={q.type === "checkbox" ? "group" : "radiogroup"} aria-label={q.label} style={{ display: "grid", gridTemplateColumns: `repeat(${q.columns},minmax(0,1fr))`, gap: 8 }}>
           {q.options.map((o) => {
             const on = q.type === "checkbox" ? (val as string[]).includes(o.value) : val === o.value;
             const pick = () => onChange(q.type === "checkbox" ? (on ? (val as string[]).filter((x) => x !== o.value) : [...(val as string[]), o.value]) : o.value);

@@ -7,6 +7,16 @@
  */
 import { z } from "zod";
 import { ctaModeSchema } from "./ctaMode";
+import { DEFAULT_SITE_SETTINGS as SITE } from "./siteDefaults";
+
+// The defaults and toggle helpers live in siteDefaults.ts (zod-free, so the
+// public bundle can use them) and are re-exported here for everyone else.
+export {
+  DEFAULT_SITE_SETTINGS, SECTION_DEFS, SECTION_KEYS, DEFAULT_SECTIONS, sectionOn,
+  CAPABILITY_KEYS, DEFAULT_CAPABILITIES, capabilityOn,
+} from "./siteDefaults";
+export type { SiteSettings, SectionsSettings, CapabilitiesSettings, SectionKey, CapabilityKey } from "./siteDefaults";
+import type { SiteSettings, SectionsSettings, CapabilitiesSettings } from "./siteDefaults";
 
 const url = z.string().trim().max(500);
 const text = z.string().trim().max(300);
@@ -15,74 +25,32 @@ const text = z.string().trim().max(300);
 
 export const siteSettingsSchema = z.object({
   /** The slug served at "/" ("Make home" in the admin). */
-  defaultVariant: z.string().trim().max(80).default("sales"),
-  ctaMode: ctaModeSchema.default("prequalify"),
-  bookingUrl: url.default("https://smart-scheduler.ai/fabp/booking/premiumleads-discovery"),
-  vimeoId: z.string().trim().max(40).default("756896760"),
-  loginUrl: url.default("https://app.premiumleads.ai/auth/sign-in"),
-  contactEmail: z.string().trim().max(320).default("hello@premiumleads.ai"),
-  siteTitle: text.default("Premium Leads"),
-  ogImage: url.default(""),
-  termsUrl: url.default(""),
-  privacyUrl: url.default(""),
-  footerNote: text.default("Premium Leads is a Find a Business Pro! application."),
-  footerNoteLinkUrl: url.default("https://findabusinesspro.com"),
-  footerNoteLinkText: text.default("Find a Business Pro!"),
+  defaultVariant: z.string().trim().max(80).default(SITE.defaultVariant),
+  ctaMode: ctaModeSchema.default(SITE.ctaMode),
+  bookingUrl: url.default(SITE.bookingUrl),
+  vimeoId: z.string().trim().max(40).default(SITE.vimeoId),
+  loginUrl: url.default(SITE.loginUrl),
+  contactEmail: z.string().trim().max(320).default(SITE.contactEmail),
+  siteTitle: text.default(SITE.siteTitle),
+  ogImage: url.default(SITE.ogImage),
+  termsUrl: url.default(SITE.termsUrl),
+  privacyUrl: url.default(SITE.privacyUrl),
+  footerNote: text.default(SITE.footerNote),
+  footerNoteLinkUrl: url.default(SITE.footerNoteLinkUrl),
+  footerNoteLinkText: text.default(SITE.footerNoteLinkText),
 });
-export type SiteSettings = z.infer<typeof siteSettingsSchema>;
-export const DEFAULT_SITE_SETTINGS: SiteSettings = siteSettingsSchema.parse({});
+/** Compile-time proof that the schema's output and the plain SiteSettings type are interchangeable. */
+type SiteSettingsParsed = z.infer<typeof siteSettingsSchema>;
+export const SITE_SETTINGS_TYPES_AGREE: [SiteSettingsParsed extends SiteSettings ? true : never, SiteSettings extends SiteSettingsParsed ? true : never] = [true, true];
 
 /* -------------------------------------------------------------- sections -- */
 
-/** Every toggleable section of the landing-page template, in the admin's order. */
-export const SECTION_DEFS = [
-  { key: "trustStrip", title: "Trust strip", note: "Four proof phrases under the hero", defaultOn: true },
-  { key: "problem", title: "Problem (villain)", note: "External, internal and philosophical problems", defaultOn: true },
-  { key: "engine", title: "Guide", note: "Empathy statement + authority proof", defaultOn: true },
-  { key: "how", title: "The plan", note: "Dark 3-step band", defaultOn: true },
-  { key: "transformation", title: "Stakes & success", note: "Failure to avoid vs. transformation", defaultOn: true },
-  { key: "usecases", title: "Use cases", note: "Audience cards and role/industry chips", defaultOn: true },
-  { key: "integrations", title: "Integrations row", note: "Salesforce, HubSpot, Pipedrive…", defaultOn: true },
-  { key: "testimonials", title: "Testimonials", note: "Two client quotes", defaultOn: true },
-  { key: "testimonialAttribution", title: "Testimonial attributions", note: "Show names, roles and initials under quotes (off until real attributions are approved)", defaultOn: false },
-  { key: "resources", title: "Resources", note: "Three featured complementary tools + link to /resources", defaultOn: true },
-  { key: "faq", title: "FAQ", note: "Six questions", defaultOn: true },
-  { key: "contactForm", title: "Contact form", note: "Name, email, company, phone, message", defaultOn: true },
-  { key: "pricing", title: "Pricing", note: "Off by default — plans and billing live inside app.premiumleads.ai", defaultOn: false },
-] as const;
-
-export type SectionKey = (typeof SECTION_DEFS)[number]["key"];
-export const SECTION_KEYS = SECTION_DEFS.map((s) => s.key) as SectionKey[];
-
-export const sectionsSettingsSchema = z.record(z.string().max(40), z.boolean());
-export type SectionsSettings = z.infer<typeof sectionsSettingsSchema>;
-export const DEFAULT_SECTIONS: SectionsSettings = Object.fromEntries(
-  SECTION_DEFS.map((s) => [s.key, s.defaultOn]),
-);
-
-/** Whether a section shows, with the per-key default for keys never saved. */
-export function sectionOn(settings: SectionsSettings, key: SectionKey): boolean {
-  const v = settings[key];
-  return typeof v === "boolean" ? v : DEFAULT_SECTIONS[key];
-}
+export const sectionsSettingsSchema: z.ZodType<SectionsSettings> = z.record(z.string().max(40), z.boolean());
 
 /* ---------------------------------------------------------- capabilities -- */
 
-/** Capability keys from the catalogue (CAPS in src/content/variants.ts). */
-export const CAPABILITY_KEYS = [
-  "aiEmployee", "linkedin", "email", "dialer", "voicemail",
-  "enrichment", "chrome", "video", "mobile", "crm",
-] as const;
-export type CapabilityKey = (typeof CAPABILITY_KEYS)[number];
-
 /** key → shown? Missing keys are on. */
-export const capabilitiesSettingsSchema = z.record(z.string().max(40), z.boolean());
-export type CapabilitiesSettings = z.infer<typeof capabilitiesSettingsSchema>;
-export const DEFAULT_CAPABILITIES: CapabilitiesSettings = {};
-
-export function capabilityOn(settings: CapabilitiesSettings, key: string): boolean {
-  return settings[key] !== false;
-}
+export const capabilitiesSettingsSchema: z.ZodType<CapabilitiesSettings> = z.record(z.string().max(40), z.boolean());
 
 /* ---------------------------------------------------------------- pricing -- */
 

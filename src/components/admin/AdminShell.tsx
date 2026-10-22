@@ -1,6 +1,9 @@
 /**
  * The signed-in frame: sidebar navigation (filtered by role), page header with
  * "Save & publish", and the routed panel. One sub-path per tab under /admin.
+ * Under 900px the sidebar becomes a sticky top bar (logo + the current tab as
+ * a menu button) and the navigation drops down from it — see `.pl-admin-*`
+ * in index.css.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../../api";
@@ -58,6 +61,8 @@ export default function AdminShell({ user, onLogout }: { user: UserRecord; onLog
   const nav = NAV.find((n) => n.key === requested);
   const tab = nav && roleAllows(user.role, requested) ? requested : homeTab;
   const current = NAV.find((n) => n.key === tab) ?? NAV[0];
+  const [navOpen, setNavOpen] = useState(false);
+  useEffect(() => { setNavOpen(false); }, [tab]);
 
   // A tab this role can't open (or an unknown one) bounces to the role's home tab.
   useEffect(() => {
@@ -145,8 +150,15 @@ export default function AdminShell({ user, onLogout }: { user: UserRecord; onLog
   return (
     <ShellContext.Provider value={host}>
       <div className="pl-admin-shell" style={{ display: "grid", gridTemplateColumns: "240px minmax(0,1fr)", minHeight: "100vh" }}>
-        <aside className="pl-admin-aside" style={{ background: "#0D1B2E", color: "#E6EEF8", padding: "22px 16px", display: "flex", flexDirection: "column", gap: 4, position: "sticky", top: 0, height: "100vh", boxSizing: "border-box", overflowY: "auto" }}>
-          <img src="/logo-wordmark-white.png" alt="Premium Leads" style={{ width: "100%", height: "auto", alignSelf: "flex-start", margin: "4px 0 18px" }} />
+        <aside className={`pl-admin-aside${navOpen ? " is-open" : ""}`} style={{ background: "#0D1B2E", color: "#E6EEF8", padding: "22px 16px", display: "flex", flexDirection: "column", gap: 4, position: "sticky", top: 0, height: "100vh", boxSizing: "border-box", overflowY: "auto", zIndex: 40 }}>
+          <div className="pl-admin-aside-top">
+            <img src="/logo-wordmark-white.png" alt="Premium Leads" width={800} height={112} style={{ width: "100%", height: "auto", alignSelf: "flex-start", margin: "4px 0 18px" }} />
+            <button type="button" className="pl-admin-menu-btn" aria-expanded={navOpen} aria-controls="pl-admin-nav" onClick={() => setNavOpen((v) => !v)}>
+              <span>{current.label}</span>
+              <svg viewBox="0 0 24 24" width={16} height={16} fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flex: "none", transform: navOpen ? "rotate(180deg)" : undefined }}><path d="M6 9l6 6 6-6" /></svg>
+            </button>
+          </div>
+          <div id="pl-admin-nav" className="pl-admin-nav">
           {navItems.map((n) => {
             const active = tab === n.key;
             return (
@@ -163,7 +175,8 @@ export default function AdminShell({ user, onLogout }: { user: UserRecord; onLog
               </div>
             );
           })}
-          <div style={{ marginTop: "auto", display: "grid", gap: 8, paddingTop: 16 }}>
+          </div>
+          <div className="pl-admin-aside-foot" style={{ marginTop: "auto", display: "grid", gap: 8, paddingTop: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 10px", borderRadius: 9, background: "rgba(230,238,248,.06)" }}>
               <span style={{ flex: "none", width: 30, height: 30, borderRadius: "50%", background: "#1E88E5", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700 }}>{initials(user.name || user.email)}</span>
               <span style={{ minWidth: 0 }}>
